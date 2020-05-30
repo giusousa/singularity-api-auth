@@ -6,6 +6,3 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/singularity-api-auth']
     # deploy container image to Cloud Run
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['gcloud', 'beta', 'run', 'deploy', 'singularity-api-auth', '--image', 'gcr.io/$PROJECT_ID/singularity-api-auth:${SHORT_SHA}']
-  images: ['gcr.io/$PROJECT_ID/singularity-api-auth']
