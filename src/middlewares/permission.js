@@ -15,6 +15,7 @@ module.exports = async (req, res, next) => {
     
     const superUser = (level == 'admin' || level == 'supermanager')
 
+    //j
     // Configuração de permissões de acordo com a url acessada e o level do usuário
     const acess = permissionConfig[level]
 
