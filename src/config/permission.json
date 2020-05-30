@@ -1,0 +1,21 @@
+{
+    "admin": {
+        "control" :     ["admin", "supermanager", "manager", "superuser", "user", "client"]
+    },
+    "supermanager": {
+        "control" :     ["manager", "superuser", "user", "client"]
+    },
+    "manager": {
+        "control" :     ["superuser", "user", "client"]
+    },
+    "superuser":{
+        "control" :     ["user", "client"]
+    },
+    "user": {
+        "control" :     ["user", "client"]
+    },
+    "client": {
+        "control" :     ["client"]
+    }
+
+}

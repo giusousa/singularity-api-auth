@@ -1,0 +1,96 @@
+{
+    "admin": {
+        "email": "admin@gmail.com",
+        "password": "12345678"
+    },
+    "supermanager": {
+        "email": "supermanager@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+    "manager1": {
+        "email": "manager1@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+    "superuser11": {
+        "email": "superuser11@gmail.com",
+        "password": "12345678"
+    },
+    "superuser12": {
+        "email": "superuser12@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+    "user11": {
+        "email": "user11@gmail.com",
+        "password": "12345678"
+    },
+
+    "user12": {
+        "email": "user12@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+    "client11": {
+        "email": "client11@gmail.com",
+        "password": "12345678"
+    },
+
+    "client12": {
+        "email": "client12@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+
+
+    "manager2": {
+        "email": "manager2@gmail.com",
+        "password": "12345678"
+    },
+
+
+    "superuser21": {
+        "email": "superuser11@gmail.com",
+        "password": "12345678"
+    },
+    "superuser22": {
+        "email": "superuser12@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+    "user21": {
+        "email": "user11@gmail.com",
+        "password": "12345678"
+    },
+
+    "user22": {
+        "email": "user12@gmail.com",
+        "password": "12345678"
+    },
+
+
+
+    "client21": {
+        "email": "client11@gmail.com",
+        "password": "12345678"
+    },
+
+    "client22": {
+        "email": "client12@gmail.com",
+        "password": "12345678"
+    }
+
+}

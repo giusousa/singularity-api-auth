@@ -1,0 +1,26 @@
+[
+    {
+        "name": "utils", 
+        "port": 3332
+    },
+    {
+        "name": "auth", 
+        "port": 3333
+    },
+    {
+        "name": "meugps", 
+        "port": 3334
+    },
+    {
+        "name": "easychat", 
+        "port": 3335
+    },
+    {
+        "name": "salesfunil", 
+        "port": 3336
+    },
+    {
+        "name": "boimanso", 
+        "port": 3337
+    }
+]

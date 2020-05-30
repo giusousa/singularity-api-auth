@@ -1,0 +1,1 @@
+// Para testar essa rota é necessário informar um token válido, por isso, ela é testada manualmente mesmo.
