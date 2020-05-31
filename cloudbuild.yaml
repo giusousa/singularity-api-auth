@@ -9,5 +9,5 @@
     - name: 'gcr.io/cloud-builders/gcloud'
       args: ['beta', 'run', 'deploy', 'singularity-api-auth', '--image', 'gcr.io/$PROJECT_ID/singularity-api-auth:${SHORT_SHA}', '--platform', 'managed', '--region', 'us-central1', '--allow-unauthenticated']
       env:
-        - 'PORT=3333'
+        - 'PORT=8080'
   images: ['gcr.io/$PROJECT_ID/singularity-api-auth']
