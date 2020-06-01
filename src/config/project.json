@@ -22,5 +22,9 @@
     {
         "name": "boimanso", 
         "port": 3337
+    },
+    {
+        "name": "thebank",
+        "port": 3338
     }
 ]

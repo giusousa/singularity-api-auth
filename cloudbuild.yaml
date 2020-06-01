@@ -10,4 +10,5 @@
       args: ['beta', 'run', 'deploy', 'singularity-api-auth', '--image', 'gcr.io/$PROJECT_ID/singularity-api-auth:${SHORT_SHA}', '--platform', 'managed', '--region', 'us-central1', '--allow-unauthenticated']
       env:
         - 'PORT=8080'
+        - 'MONGODB_PROD=mongodb+srv://singularity-api-auth:singularity-api-auth@cluster0-ekfxf.gcp.mongodb.net/singularity-api-auth?retryWrites=true&w=majority'
   images: ['gcr.io/$PROJECT_ID/singularity-api-auth']

@@ -1,7 +1,5 @@
 DOCUMENTAÇÃO DA API
 
-
-
 USUÁRIOS - Regras
 
     admin           - controle sobre todos os usuários 'supermanager'
@@ -29,7 +27,7 @@ REGRA 5 - Não é possível editar o managerId de uma store
 
 REGRA 6 - Nas rotas onde a QUERY 'managerId' é obrigatória.
     // 'admin' e 'supermanager' devem informar o valor 'admin'
-    // Outros devem informar o 'managerId' de sua organização 
+    // Outros devem informar o 'managerId' da organização (O ID DO MANAGER)
 
 =====================================================================================================
 =====================================================================================================
