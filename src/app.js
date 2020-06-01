@@ -9,8 +9,8 @@ const app = express();                  // Cria uma variável para armazenar a a
 
 app.use(cookieParser());
 app.use(cors({
-//    origin: true,
-    credentials: true
+    origin: false,
+    //credentials: true
 }));
 app.use(express.json());                // Informa ao express que usaremos Json nas requisições ao servidor
 app.use(routes);                        // Faz com que o app utilize um arquivo externo que contem as rotas disponíveis
