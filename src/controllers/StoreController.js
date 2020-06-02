@@ -42,9 +42,14 @@ module.exports = {
         if (level == 'manager')
             query.$and.push({ managerId: userId});
 
-        stores.map(_id => {
-            query.$and.push({$or: [{ _id }]})
-        })
+        if (stores.length > 0) {
+            const or = [];
+            stores.map(_id => {
+                or.push({_id})
+                
+            })
+            query.$and.push({$or: or})
+        };
 
         const count = await schema.countDocuments(query);
 
