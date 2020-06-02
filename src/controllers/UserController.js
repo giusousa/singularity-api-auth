@@ -1,5 +1,6 @@
 const schema = require('../mongo/user');
-const generateToken = require('../utils/generateToken')
+const generateToken = require('../utils/generateToken');
+const permission = require('../config/permission.json')
 
 module.exports = {
 
@@ -68,7 +69,8 @@ module.exports = {
                     id: result._id, 
                     project: body.project, 
                     level: body.level,
-                    managerId: result.managerId
+                    managerId: result.managerId,
+                    stores: result.stores,
                 }),
             });
 
@@ -82,43 +84,44 @@ module.exports = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     async index(req, res) {
 
         const { page = 1 } =  req.query;
-        const project = req.project
-        const managerId = req.managerId
+        const project = req.project;
+        const level     = req.level;
+        const managerId = req.managerId;
+        const stores = req.stores;
 
-        const count = await schema.countDocuments();
+        // O usuários com o mesmo mesmo 'project' e 'managerId' que o seu
+        // OBS: 'Usuários 'supermanager' não precisam informar managerId
+        // Usuário 'manager', 'superuser' e 'user' podem listar apenas contas de leveis inferiores
+        const query = level == 'supermanager' 
+            ? { $and: [ { project }]}
+            : { $and: [ { managerId, project, level: { $in: permission[level].control}  }]};
 
-        let result = await schema.find({ project, $or:[{managerId: managerId}, {level:"supermanager"}] })
+        // 'superuser' e 'user' podem listar apenas usuários de suas lojas
+        if (level == 'superuser' || level == 'user') {
+
+            // Caso o usuário faça parte de pelo menos 1 loja
+            if (stores.length > 0) {
+                const or = [];
+                // Buscar usuários que façam parte de uma de suas lojas
+                stores.map(_id => {
+                    or.push({ stores: _id })
+                })
+                or.push({ stores: _id })
+                query.$and.push({$or: or})
+
+            } else {
+                return res.status(400).send({ error: 'Erro. 0 stores registers in user'});
+            }
+        };
+
+
+        const count = await schema.countDocuments(query);
+
+
+        let result = await schema.find(query)
         .skip((page - 1) * 5)
         .limit(5)
         .then ((data) => { 

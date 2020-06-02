@@ -39,10 +39,11 @@ module.exports = async (req, res, next) => {
             return res.status(401).send({ error: 'Token invalid'})
 
         // Informações descriptografadas do token
-        req.userId = decoded.id;
-        req.managerId = decoded.managerId;
-        req.level  = decoded.level;
-        req.project = decoded.project
+        req.userId      = decoded.id;
+        req.managerId   = decoded.managerId;
+        req.level       = decoded.level;
+        req.project     = decoded.project;
+        req.stores      = decoded.stores;
 
         return next()
     });

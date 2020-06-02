@@ -201,7 +201,17 @@ URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'adm
 PARAM   : _id               Obrigatório para (todos)    // ID do cadastro que o user quer apagar
 
 
+9. INTENÇÃO:
+    Listar usuários
 
+auth    : Requer autenticação
+Método  : get
+URL     : /user/<project>
+QUERY   : page                  (number)       Obrigatório para (todos)
+
+Obs1. Serão listados sempre usuários de níveis inferiores
+Obs2. 'manager' podem ver todos do grupo
+Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
 
 =====================================================================================================
 =====================================================================================================
@@ -211,7 +221,7 @@ STORE
 =====================================================================================================
 =====================================================================================================
 
-9. INTENÇÃO:
+10. INTENÇÃO:
     Cadastrar nova loja
 
 auth    : Requer autenticação
@@ -238,7 +248,7 @@ BODY    :   name            (string)                        Obrigatório para (t
 
 =============================================================================================================================
 
-10. Intenção
+11. Intenção
     Editar loja
 
 auth    : Requer autenticação
@@ -265,7 +275,7 @@ BODY    :   name            (string)
 
 ================================================================================================================================
 
-11. Intenção:
+12. Intenção:
     Deletar uma loja
 
 auth    : Requer autenticação
@@ -276,7 +286,7 @@ QUERY   : storeId                (string)                Obrigatório para (todo
 
 ================================================================================================================================
 
-12. Intenção:
+13. Intenção:
     Listar uma loja
 
 auth    : Requer autenticação

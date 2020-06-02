@@ -123,24 +123,12 @@ const routes  = express.Router();
 	routes.get('/user/*', authMiddleware , permissionMiddleware, celebrate({
 
 		[Segments.QUERY]: 	Joi.object().keys({
-			managerId: 		Joi.string().required()
-		}),
-
-		[Segments.QUERY]: Joi.object().keys({
-			page: Joi.string().required()
+			page: 			Joi.string(),
 		}),
 
 	}), UserController.index); 
 
 	
-
-
-
-
-
-
-
-
 
 
 	routes.put('/user/*', authMiddleware, permissionMiddleware, celebrate({

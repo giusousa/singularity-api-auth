@@ -30,8 +30,9 @@ module.exports = {
             id: result._id, 
             project: result.project, 
             level: result.level, 
-            managerId: result.managerId  
-        })
+            managerId: result.managerId,
+            stores: result.stores,
+        });
 
 
         res.cookie('auth_token', token, { maxAge: 900000, httpOnly: true });
