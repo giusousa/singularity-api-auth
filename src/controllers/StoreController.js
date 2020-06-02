@@ -37,11 +37,12 @@ module.exports = {
         const { page = 1 } =  req.query;
         const stores = req.query.stores ? JSON.parse(req.query.stores) : [];
 
-        // Se o usuário for um 'manager'
+        // Se o usuário for um 'manager', buscar as lojas com o Id dele
         const query = { $and: []};
         if (level == 'manager')
             query.$and.push({ managerId: userId});
 
+        // Buscar lojas pelo ID
         if (stores.length > 0) {
             const or = [];
             stores.map(_id => {
@@ -117,8 +118,7 @@ module.exports = {
             query.managerId = userId
 
         try {
-            schema.deleteOne({ _id: storeId});
-            
+            await schema.findByIdAndRemove(storeId);
         } catch (err) {
             return res.status(400).send({ error: 'Erro delete item'});
         }
