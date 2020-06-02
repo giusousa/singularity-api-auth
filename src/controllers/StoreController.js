@@ -92,10 +92,11 @@ module.exports = {
 
         try {
 
-            await schema.findOneAndUpdate(query, {
+            const res = await schema.findOneAndUpdate(query, {
                 '$set': infos
             });
 
+            
         } catch (err) {
             //console.log(err)
             return res.status(400).send({ error: 'Erro edit item'});

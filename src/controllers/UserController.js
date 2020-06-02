@@ -167,12 +167,13 @@ module.exports = {
                 '$set': body
             });
 
+            return res.json(update);
         } catch (err) {
             
             return res.status(400).send({ error: 'Erro edit item'});
         }
 
-        return res.json();
+        
 
     },
 
