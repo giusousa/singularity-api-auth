@@ -188,10 +188,10 @@ module.exports = {
 
     async delete(req, res) {
        
-        const userId = req.body._id
+        const { _id } = req.body
 
         try {
-            schema.deleteOne({ _id: userId});
+            await schema.findByIdAndRemove(_id);
         } catch (err) {
             return res.status(400).send({ error: 'Erro delete item'});
         }
