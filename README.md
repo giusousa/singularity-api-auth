@@ -158,7 +158,6 @@ BODY    :   name            (string)                    Obrigatório para (todos
 
 auth    : Requer autenticação
 Método  : put
-QUERY   :   managerId       (string)   Obrigatório para ('admin' e 'supermanager') 
 URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'admin' usar 'auth' como nome do projeto, em todos os outros 
                             casos, a requisição deve ser enviada para a url do projeto do qual o usuário fará parte)
 
@@ -195,10 +194,11 @@ BODY    :   _id             (string)                    Obrigatório para (todos
 
 auth    : Requer autenticação
 Método  : delete
-QUERY   :   managerId       (string)   Obrigatório para ('admin' e 'supermanager') 
 URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'admin' usar 'auth' como nome do projeto, em todos os outros 
                             casos, a requisição deve ser enviada para a url do projeto do qual o usuário fará parte)
 PARAM   : _id               Obrigatório para (todos)    // ID do cadastro que o user quer apagar
+
+===========================================================================================================================
 
 
 9. INTENÇÃO:
@@ -212,6 +212,7 @@ QUERY   : page                  (number)       Obrigatório para (todos)
 Obs1. Serão listados sempre usuários de níveis inferiores
 Obs2. 'manager' podem ver todos do grupo
 Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
+
 
 =====================================================================================================
 =====================================================================================================

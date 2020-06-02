@@ -133,20 +133,17 @@ const routes  = express.Router();
 
 	routes.put('/user/*', authMiddleware, permissionMiddleware, celebrate({
 
-		[Segments.QUERY]: 	Joi.object().keys({
-			managerId: 		Joi.string().required()
-		}),
-
 
 		[Segments.BODY]: Joi.object().keys({
 
-			name:           Joi.string().required(),
+			_id:			Joi.string().required(),
+			name:           Joi.string(),
 			cpfCnpj:        Joi.string(),
 			birth:          Joi.string(),
 	
 			telephone1:     Joi.string().min(10).max(11),
 			telephone2:     Joi.string().min(10).max(11),
-			email:          Joi.string().required().email(),
+			email:          Joi.string().email(),
 			whatsapp:       Joi.string().min(10).max(11),
 	
 			address:        Joi.string(),
@@ -158,8 +155,8 @@ const routes  = express.Router();
 			uf:             Joi.string().length(2),
 			cep:            Joi.string().min(8).max(9),
 
-			password:       Joi.string().required().min(6).max(20),
-			level: 			Joi.string().required(),					//'admin', 'manager' and 'user'
+			password:       Joi.string().min(6).max(20),
+			level: 			Joi.string(),					//'admin', 'manager' and 'user'
 			stores:			Joi.array(),
 
 			attributes:		Joi.object(),

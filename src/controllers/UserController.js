@@ -145,6 +145,7 @@ module.exports = {
     async edit(req, res) {
         
         const body = req.body;
+        const _id = body._id
 
         // Ninguém pode alterar esses campos de um usuário
         delete body._id
@@ -156,22 +157,18 @@ module.exports = {
         delete body.managerId  
 
         // Se o usuário estiver tentando atualizar seu próprio cadastro
-        if (req.userId === req.body._id) {
-
+        if (req.userId === _id) {
             delete body.level              
             delete body.stores             
-
         }
 
-
         try {
-
-            await schema.findOneAndUpdate({ _id: req.body._id}, {
+            const update = await schema.findOneAndUpdate({ _id }, {
                 '$set': body
             });
 
         } catch (err) {
-
+            
             return res.status(400).send({ error: 'Erro edit item'});
         }
 

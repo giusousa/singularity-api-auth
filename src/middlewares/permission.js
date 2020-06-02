@@ -27,8 +27,11 @@ module.exports = async (req, res, next) => {
     // Caso a rota seja a de usuários
     if (url === '/user/*') {
 
+        // Verificar o cadastro que se quer manipular
+        const { _id } = req.body
+
         // Todos os usuários podem alterar seus próprios cadastros
-        if (method == 'PUT' && userId === req.body._id) {
+        if (method == 'PUT' && userId === _id) {
             return next(); 
         }
 
@@ -37,29 +40,35 @@ module.exports = async (req, res, next) => {
             return next(); 
         }
 
-        // Bloqueia usuários que estejam tentando editar dados de um alguém do nível superior 
-        if (!Boolean(acess.control.find( a => { return a == req.body.level})))
-            return res.status(400).send({ error: 'You dont have access to the user level'});
 
         if (method == 'POST') {
+            // Bloqueia usuários que estejam tentando Criar usuários de um alguém do nível superior 
+            if (!Boolean(acess.control.find( a => { return a == req.body.level})))
+                return res.status(400).send({ error: 'You dont have access to the user level'});
+
             return next(); 
         }
 
-  
-        // Verificar o cadastro que se quer manipular
-        const { email } = req.body
+        if (method == 'PUT' || method == 'DELETE') {
 
-        // Se o usuário for um 'super', deverá informar uma QUERY com 'managerId' do usuário que quer manipular
-        // Como usuários comuns possuem esse campo setado automaticamente de acordo com o seu próprio, caso seja encontrado
-        // um cadastro, significa que o usuário é da sua própria organização
-        const register = await schema.findOne({ email, managerId: superUser ? req.query.managerId : managerId})
+            // Verifica se existe um cadastro com o ID informado
+            try {   
+                const register = await userSchema.findOne({  _id })
 
-        if (!register)
-            return res.status(400).send({ error: 'register not found'});
-
+                // Bloqueia usuários que estejam tentando editar dados de um alguém do nível superior 
+                if (!Boolean(acess.control.find( a => { return a == register.level})))
+                    return res.status(400).send({ error: 'You dont have access to the user level'});
  
-        return next(); 
+                    // Caso a pessoa não seja um 'superUser', poderá alterar apenas users da sua organização
+                if (!superUser && (managerId != register.managerId))
+                    return res.status(400).send({ error: 'You dont have access to the user group'});
 
+            } catch (err) {
+                return res.status(400).send({ error: 'User not found'});
+            }
+
+            return next(); 
+        }
     }
             
 
