@@ -169,12 +169,13 @@ const routes  = express.Router();
 	routes.delete('/user/*', authMiddleware, permissionMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
-			id:  Joi.string().required()
+			_id:  Joi.string().required()
 		}),
 		
 	}), UserController.delete); 
 
 
+	
 
 
 
