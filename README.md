@@ -196,7 +196,7 @@ auth    : Requer autenticação
 Método  : delete
 URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'admin' usar 'auth' como nome do projeto, em todos os outros 
                             casos, a requisição deve ser enviada para a url do projeto do qual o usuário fará parte)
-PARAM   : _id               Obrigatório para (todos)    // ID do cadastro que o user quer apagar
+BODY    : _id               Obrigatório para (todos)    // ID do cadastro que o user quer apagar
 
 ===========================================================================================================================
 
