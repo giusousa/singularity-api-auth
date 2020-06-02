@@ -229,7 +229,7 @@ const routes  = express.Router();
 
 	routes.get('/store/*', authMiddleware, permissionMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
-			stores:  	Joi.array(),
+			stores:  	Joi.string(),
 			page: 		Joi.number()
 		})
 	}), StoreController.index);

@@ -34,19 +34,21 @@ module.exports = {
         const level     = req.level;
         const userId    = req.userId;
 
-        const { page = 1, stores } =  req.query;
-
-        const storesQuery = [];
-        for ( const _id in stores ) {
-            storesQuery.push({ $or: [{ _id }] })
-        }
+        const { page = 1 } =  req.query;
+        const stores = req.query.stores ? JSON.parse(req.query.stores) : [];
 
         // Se o usuário for um 'manager'
-        const query = level == 'manager' ? { managerId: userId} : {};
+        const query = { $and: []};
+        if (level == 'manager')
+            query.$and.push({ managerId: userId});
 
-        const count = await schema.countDocuments(query).and(storesQuery);
+        stores.map(_id => {
+            query.$and.push({$or: [{ _id }]})
+        })
 
-        const result = await schema.find(query).and(storesQuery)
+        const count = await schema.countDocuments(query);
+
+        const result = await schema.find(query)
         .skip((page - 1) * 5)
         .limit(5)
         .then ((data) => { 
@@ -110,8 +112,8 @@ module.exports = {
             query.managerId = userId
 
         try {
-            schema.deleteOne(query);
-
+            schema.deleteOne({ _id: storeId});
+            
         } catch (err) {
             return res.status(400).send({ error: 'Erro delete item'});
         }
