@@ -54,6 +54,7 @@ module.exports = async (req, res, next) => {
             // Verifica se existe um cadastro com o ID informado
             try {   
                 const register = await userSchema.findOne({  _id })
+                console.log(register)
 
                 // Bloqueia usuários que estejam tentando editar dados de um alguém do nível superior 
                 if (!Boolean(acess.control.find( a => { return a == register.level})))
