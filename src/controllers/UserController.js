@@ -180,15 +180,9 @@ module.exports = {
 
 
 
-
-
-
-
-
-
     async delete(req, res) {
        
-        const { _id } = req.body
+        const { _id } = req.query;
 
         try {
             await schema.findByIdAndRemove(_id);

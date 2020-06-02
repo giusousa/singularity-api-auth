@@ -27,8 +27,8 @@ module.exports = async (req, res, next) => {
     // Caso a rota seja a de usuários
     if (url === '/user/*') {
 
-        // Verificar o cadastro que se quer manipular
-        const { _id } = req.body
+        // ID que será manipulado
+        const _id = method == 'DELETE' ? req.query._id : req.body._id;
 
         // Todos os usuários podem alterar seus próprios cadastros
         if (method == 'PUT' && userId === _id) {
@@ -54,8 +54,7 @@ module.exports = async (req, res, next) => {
             // Verifica se existe um cadastro com o ID informado
             try {   
                 const register = await userSchema.findOne({  _id })
-                console.log(register)
-
+ 
                 // Bloqueia usuários que estejam tentando editar dados de um alguém do nível superior 
                 if (!Boolean(acess.control.find( a => { return a == register.level})))
                     return res.status(400).send({ error: 'You dont have access to the user level'});
