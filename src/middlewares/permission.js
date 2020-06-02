@@ -66,19 +66,23 @@ module.exports = async (req, res, next) => {
     // ROTA PARA EDIÇÃO DE LOJAS
     if (url === '/store/*') {
         
-        // CASO O USUÁRIO SEJA 'supermanager'
-        if (level === 'supermanager'){
+        // Caso seja um usuário querendo carregar uma loja
+        if (method == 'GET') {
+            if (level != 'manager' && !req.query.stores)
+                return res.status(400).send({error: 'QUERY "stores". Camp incorret'});
+
             return next()
         }
+           
 
-        if (level == 'manager') {
-            // Caso seja um usuário 'manager' querendo carregar suas lojas
-            if (method == 'GET')
-                return next()
-            // Caso seja um usuário 'manager' querendo editar suas lojas
-            if (method == 'PUT' && req.query.storeId == managerId)
-                return next()
-        }
+        // Caso seja um 'supermanager' querendo criar uma loja
+        if (level === 'supermanager' && method == 'POST' && !req.query.managerId)
+            return res.status(400).send({error: 'QUERY "managerId". Camp incorret'});
+
+        // CASO O USUÁRIO SEJA 'supermanager' ou manager
+        if (level === 'supermanager' || level == 'manager')
+            return next()
+        
 
         return res.status(400).send({ error: 'You are not authorized to edit store'});
 

@@ -217,6 +217,7 @@ STORE
 auth    : Requer autenticação
 Método  : post
 URL     : /store/<project>
+QUERY   :   managerId       (string)                        Obrigatório para (supermanager)  // ID do usuário próprietário da loja
 BODY    :   name            (string)                        Obrigatório para (todos)
             cpfCnpj         (string) 
 
@@ -233,7 +234,6 @@ BODY    :   name            (string)                        Obrigatório para (t
             uf              (string) 
             cep             (string)
 
-            idManager       (string)                         Obrigatório para (todos)  // ID do usuário próprietário da loja
             attributes      (object) 
 
 =============================================================================================================================
@@ -274,3 +274,15 @@ URL     : /store/<project>
 QUERY   : storeId                (string)                Obrigatório para (todos)
 
 
+================================================================================================================================
+
+12. Intenção:
+    Listar uma loja
+
+auth    : Requer autenticação
+Método  : get
+URL     : /store/<project>
+QUERY   : stores                (array)        Obrigatório para (todos, menos para o manager) //Ids das lojas a baixar
+          page                  (number)       Obrigatório para (todos)
+
+          Obs: Somente para usuarios 'manager' Se não informar ids na array 'stores', irá baixar todas as suas lojas

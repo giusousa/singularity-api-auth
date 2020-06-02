@@ -4,10 +4,18 @@ module.exports = {
 
     async create(req, res) {
 
-        const infos = req.body;
+        const infos     = req.body;
+        const level     = req.level;
+        const userId    = req.userId;
 
         try {
             infos.project = req.project;
+
+            infos.managerId = level == 'manager' 
+                ? userId 
+                : level == 'supermanager' 
+                    ? req.query.managerId
+                    : res.status(400).send({error: 'Erro create item'});
 
             const result = await schema.create(infos);
 
@@ -23,20 +31,22 @@ module.exports = {
     // Busca as lojas disponíveis
     async index(req, res) {
 
-        const { page = 1 } =  req.query;
+        const level     = req.level;
+        const userId    = req.userId;
 
-        // Informações para realizar a busca
-        const query = { 
-            project: req.project
+        const { page = 1, stores } =  req.query;
+
+        const storesQuery = [];
+        for ( const _id in stores ) {
+            storesQuery.push({ $or: [{ _id }] })
         }
 
         // Se o usuário for um 'manager'
-        if (req.level == 'manager')
-            query.managerId = req.managerId
+        const query = level == 'manager' ? { managerId: userId} : {};
 
-        const count = await schema.countDocuments(query);
+        const count = await schema.countDocuments(query).and(storesQuery);
 
-        const result = await schema.find(query)
+        const result = await schema.find(query).and(storesQuery)
         .skip((page - 1) * 5)
         .limit(5)
         .then ((data) => { 
@@ -55,18 +65,26 @@ module.exports = {
 
     async edit(req, res) {
         
-        const infos = req.body
-        const { storeId } =  req.query;
+        const infos     = req.body;
+        const { level, userId }     = req;
+        const { storeId }   =  req.query;
 
+        const query         = { _id: storeId };
+        // Um usuário manager só pode alterar lojas que pertençam a ele mesmo
+        if (level == 'manager')
+            query.managerId = userId
+
+        // Não é possível alterar o projeto da loja
         if (infos.project)
             delete infos.project;
-        
+
+        // Não é possível alterar o managerId da loja
         if (infos.managerId)
             delete infos.managerId;
 
         try {
 
-            await schema.findOneAndUpdate({ _id: storeId}, {
+            await schema.findOneAndUpdate(query, {
                 '$set': infos
             });
 
@@ -83,11 +101,17 @@ module.exports = {
     
     async delete(req, res) {
         
+        const { level, userId }     = req;
+        const { storeId }   =  req.query;
 
-        const { storeId } =  req.query;
+        const query         = { _id: storeId };
+        // Um usuário manager só pode alterar lojas que pertençam a ele mesmo
+        if (level == 'manager')
+            query.managerId = userId
 
         try {
-            schema.deleteOne({ _id: storeId});
+            schema.deleteOne(query);
+
         } catch (err) {
             return res.status(400).send({ error: 'Erro delete item'});
         }

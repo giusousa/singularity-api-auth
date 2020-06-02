@@ -198,6 +198,11 @@ const routes  = express.Router();
 
 	routes.post('/store/*', authMiddleware, permissionMiddleware, celebrate({
 
+		[Segments.QUERY]: Joi.object().keys({
+			managerId:  Joi.string(),
+		}),
+
+
 		[Segments.BODY]: Joi.object().keys({
 
 			name:           Joi.string().required(),
@@ -215,16 +220,21 @@ const routes  = express.Router();
 			city:           Joi.string(),
 			uf:             Joi.string().length(2),
 			cep:            Joi.string().min(8).max(9),
-
-			managerId:		Joi.string().required(),						// ID do user Manager proprietario da loja
-		
+				
 			attributes:		Joi.object(),
 		})
 
 
 	}), StoreController.create); 
 
-	
+	routes.get('/store/*', authMiddleware, permissionMiddleware, celebrate({
+		[Segments.QUERY]: Joi.object().keys({
+			stores:  	Joi.array(),
+			page: 		Joi.number()
+		})
+	}), StoreController.index);
+
+
 	routes.put('/store/*', authMiddleware, permissionMiddleware, celebrate({
 
 		[Segments.QUERY]: Joi.object().keys({
@@ -259,6 +269,7 @@ const routes  = express.Router();
 		})
 	}), StoreController.delete); 
 
+ 
 
 	// Redirecionamento para as APIS de projeto
 
