@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 require('dotenv').config();
 
 
-//mongoose.connect('mongodb://localhost/noderest', { useMongoClient: true })
-
 mongoose.Promisse = global.Promisse
 mongoose.set('useFindAndModify', false);
 

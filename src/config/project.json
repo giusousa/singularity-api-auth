@@ -21,7 +21,9 @@
     },
     {
         "name": "boimanso", 
-        "port": 3337
+        "port": 3337,
+        "pubsub": "boimanso-backend",
+        "url": "https://boimanso-backend-7scc3zwlma-uc.a.run.app/"
     },
     {
         "name": "thebank",

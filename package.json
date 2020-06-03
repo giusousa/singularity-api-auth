@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=PROD node src/server.js",
-    "dev":   "cross-env NODE_ENV=DEV  nodemon src/server.js",
-    "test":  "cross-env NODE_ENV=TEST jest",
+    "dev": "cross-env NODE_ENV=DEV  nodemon src/server.js",
+    "test": "cross-env NODE_ENV=TEST jest",
     "tunnel": "ngrok http 3333"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/pubsub": "^2.1.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "celebrate": "^12.1.1",

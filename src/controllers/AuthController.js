@@ -13,7 +13,7 @@ module.exports = {
 
         // Verifica se o usuário existe no banco de dados
         const result = await schema.findOne({ email, managerId }).select('name email password level project stores managerId attributes');
-
+  
         // Caso o usuário não exista, enviar aviso de erro
         if (!result) 
             return res.status(400).send({ error: 'User not found' });

@@ -261,54 +261,64 @@ const routes  = express.Router();
 
 	projectConfig.map(Project => {
 		
-		routes.all(`/${Project.name}/*`, async function (req, res) {
+		routes.all(`/${Project.name}/*`, authMiddleware, async function (req, res) {
 
 			// Cria chaves no cabeçalho QUERY com as variáveis decodificadas do token
-			const {userId, managerId, level, project} = req;
-			const params = { params: { userId, managerId, level, project } };
+			const { userId, managerId, level, project, stores } = req;
+
+			const params = { params: {}}
 
 			// Caso o usuário tenha informado mais alguma QUERY, adicionar
 			for (const prop in req.query) {
 				params.params[prop] = req.query[prop]
 			}
 
+			params.params.userId 	= userId;
+			params.params.managerId = managerId;
+			params.params.level 	= level;
+			params.params.project 	= project;
+			params.params.stores 	= stores;
+
 			// Corpo da requisição (Apenas em POST ou PUT)
-			const data = { data: req.body };
+			const data = req.body ;
 
-			const baseURL = axios.create({
-				baseURL: `http://localhost:${project.port}/`,
-			});
+			const url = process.env.NODE_ENV == 'PROD' 
+				? Project.url 
+				: `http://localhost:${Project.port}/`
 
+			const baseURL = axios.create({ baseURL: url });
 
 			try {
 				const newRoute 	= req.params[0]
 				const method 	= req.method;
 
-				if (method == 'GET') 
-					resApi = await baseURL.get(newRoute, null, params)
+				const resApi = 
+					method == 'GET'
+					? await baseURL.get(newRoute, params)
+					: method == 'POST'
+						? await baseURL.post(newRoute, data, params)
+						: method == 'PUT'
+							? await baseURL.put(newRoute, data, params)
+							: method == 'DELETE'
+								? await baseURL.delete(newRoute, params)
+								: false;
+				if (!resApi)
+					return res.status(400).send({ error: 'Erro request router api' });
 
-				if (method == 'POST')
-					resApi = await baseURL.post(newRoute, data, params)
+				const status  = resApi.status;
+				const dataRes = resApi.data;
 
-				if (method == 'PUT')
-					resApi = await baseURL.put(newRoute, data, params)
-
-				if (method == 'DELETE')
-					resApi = await baseURL.delete(newRoute, null, params)
+				return res.status(status).send(dataRes);
 
 			} catch (err) {
 
-				const status = err.response.data
+				const status = err.response ? err.response.status : 400
+				const dataRes 	 = err.response ? err.response.data : 'Not response secondary Api'
 
-				res.status(status.statusCode).send({ 
-					error: 'Internal api error - ' + status.message 
-				})
+				return res.status(status).send({ error: 'Internal api error - ' + JSON.stringify(dataRes) });
 
-			}
-
-		
+			};
 		});
-
 	});
 
 
