@@ -77,8 +77,6 @@ module.exports = async (req, res, next) => {
         
         // Caso seja um usuário querendo carregar uma loja
         if (method == 'GET') {
-            if (level != 'manager' && !req.query.stores)
-                return res.status(400).send({error: 'QUERY "stores". Camp incorret'});
 
             return next()
         }

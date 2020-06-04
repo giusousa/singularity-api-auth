@@ -35,7 +35,10 @@ module.exports = {
         const userId    = req.userId;
 
         const { page = 1 } =  req.query;
-        const stores = req.query.stores ? JSON.parse(req.query.stores) : [];
+
+        // Caso o usuário tenha informado uma query de buscas, buscar a loja específica
+        // Caso contrário, buscar todas as lojas
+        const stores = level == 'manager' ? [] : req.stores;
 
         // Se o usuário for um 'manager', buscar as lojas com o Id dele
         const query = { $and: []};

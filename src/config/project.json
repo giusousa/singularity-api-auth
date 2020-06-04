@@ -1,7 +1,9 @@
 [
     {
         "name": "utils", 
-        "port": 3332
+        "port": 3332,
+        "pubsub": "singularity-api-utils",
+        "url": "https://singularity-api-utils-7scc3zwlma-uc.a.run.app/"
     },
     {
         "name": "auth", 

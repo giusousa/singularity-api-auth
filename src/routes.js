@@ -215,7 +215,6 @@ const routes  = express.Router();
 
 	routes.get('/store/*', authMiddleware, permissionMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
-			stores:  	Joi.string(),
 			page: 		Joi.number()
 		})
 	}), StoreController.index);
@@ -311,6 +310,7 @@ const routes  = express.Router();
 				return res.status(status).send(dataRes);
 
 			} catch (err) {
+
 
 				const status = err.response ? err.response.status : 400
 				const dataRes 	 = err.response ? err.response.data : 'Not response secondary Api'

@@ -293,7 +293,6 @@ QUERY   : storeId                (string)                Obrigatório para (todo
 auth    : Requer autenticação
 Método  : get
 URL     : /store/<project>
-QUERY   : stores                (array)        Obrigatório para (todos, menos para o manager) //Ids das lojas a baixar
-          page                  (number)       Obrigatório para (todos)
+QUERY   : page                  (number)       Obrigatório para (todos)
 
           Obs: Somente para usuarios 'manager' Se não informar ids na array 'stores', irá baixar todas as suas lojas
