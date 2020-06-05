@@ -36,8 +36,8 @@ module.exports = {
 
         const { page = 1 } =  req.query;
 
-        // Caso o usuário tenha informado uma query de buscas, buscar a loja específica
-        // Caso contrário, buscar todas as lojas
+        // Usuário 'manager' buscam todas as lojas com o mesmo "managerId"
+        // Usuários 'superuser' buscam as lojas que eles estão cadastrados.
         const stores = level == 'manager' ? [] : req.stores;
 
         // Se o usuário for um 'manager', buscar as lojas com o Id dele

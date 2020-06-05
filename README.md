@@ -295,4 +295,5 @@ Método  : get
 URL     : /store/<project>
 QUERY   : page                  (number)       Obrigatório para (todos)
 
-          Obs: Somente para usuarios 'manager' Se não informar ids na array 'stores', irá baixar todas as suas lojas
+        // Usuário 'manager' visualizam todas as lojas com o mesmo 'managerId'
+        // Outros usuários visualizam as lojas que constam nos seus cadastros.
