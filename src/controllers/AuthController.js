@@ -34,8 +34,8 @@ module.exports = {
             stores: result.stores,
         });
 
-
-        res.cookie('auth_token', token, { maxAge: 900000, httpOnly: true });
+        // Cookie é válido por 60 dias
+        res.cookie('auth_token', token, { maxAge: 5184000000, httpOnly: true });
         res.json({ 
             result, 
             token

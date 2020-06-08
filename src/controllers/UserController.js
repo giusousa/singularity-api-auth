@@ -107,7 +107,6 @@ module.exports = {
                 const or = [];
                 // Buscar usuários que façam parte de uma de suas lojas
                 stores.map(_id => {
-                    console.log(_id)
                     or.push({ stores: _id })
                 })
 
