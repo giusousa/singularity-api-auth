@@ -9,7 +9,7 @@ const app = express();                  // Cria uma variável para armazenar a a
 
 app.use(cookieParser());
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://boimanso-frontend-7scc3zwlma-uc.a.run.app/'],
+    origin: ['http://localhost:3000', 'https://boimanso-frontend-7scc3zwlma-uc.a.run.app'],
     credentials: true
 }));
 app.use(express.json());                // Informa ao express que usaremos Json nas requisições ao servidor
