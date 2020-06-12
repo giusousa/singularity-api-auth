@@ -63,7 +63,7 @@ QUERY   :   token              (string)   Obrigatório para todos;   // Cód de 
             EASYCHAT - telephoneConsult
             // Verifica se existe um cadastro de loja ou usuário com o número de telefone informado.
             telephone      (string)   Obrigatório para todos;  // Número consultado
-            type           (string)   Obrigatório para todos;  // Tipo de cadastro ("user or store")
+            level          (string)   Obrigatório para todos;  // Tipo de cadastro ("user or store")
             managerId      (string)   Obrigatório (Se info.type for "user");
 
 
