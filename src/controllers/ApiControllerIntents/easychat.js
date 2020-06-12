@@ -30,10 +30,12 @@ module.exports =  {
 
         const {telephone, type, managerId} = req.query;
 
-
         // Parâmetros obrigatórios
         if (!telephone || !type || (type == 'user' && !managerId))
             res.status(400).send({error: 'QUERY: telephone or type or managerId inválid'});
+        // O número precisa ter 12 ou 13 caracters
+        if (telephone.length != 12 && telephone.length != 13)
+            res.status(400).send({error: 'QUERY: telephone required 12 or 13 caracteres. ex: 5585988558855'});
 
         // Query de busca
         const query = { telephone1: telephone, project: 'easychat' };
