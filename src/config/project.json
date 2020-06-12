@@ -15,7 +15,9 @@
     },
     {
         "name": "easychat", 
-        "port": 3335
+        "port": 3335,
+        "token": "9b4f518448a4",
+        "intents":  ["init", "telephoneConsult"]
     },
     {
         "name": "salesfunil", 

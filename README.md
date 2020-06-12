@@ -29,6 +29,46 @@ REGRA 6 - Nas rotas onde a QUERY 'managerId' é obrigatória.
     // 'admin' e 'supermanager' devem informar o valor 'admin'
     // Outros devem informar o 'managerId' da organização (O ID DO MANAGER)
 
+
+
+
+
+
+
+=====================================================================================================
+=====================================================================================================
+=====================================================================================================
+API
+=====================================================================================================
+=====================================================================================================
+=====================================================================================================
+
+1. Intenção:
+    Utilizar funções criadas especialmente para apis de outros projetos do grupo
+
+auth    : Requer autenticação
+Método  : get
+URL     : /api/<project>    
+QUERY   :   token              (string)   Obrigatório para todos;   // Cód de autorização
+            intent             (string)   Obrigatório para todos;   // Intenção
+            
+
+            QUERIES ADICIONAIS
+
+            EASYCHAT - init
+            // Busca os dados da loja acessada e do usuario que esta acessando
+            telephoneUser       (string)   Obrigatório para todos;  // Número consultado USUARIO
+            telephoneStore      (string)   Obrigatório para todos;  // Número consultado STORE
+
+            EASYCHAT - telephoneConsult
+            // Verifica se existe um cadastro de loja ou usuário com o número de telefone informado.
+            telephone      (string)   Obrigatório para todos;  // Número consultado
+            type           (string)   Obrigatório para todos;  // Tipo de cadastro ("user or store")
+            managerId      (string)   Obrigatório (Se info.type for "user");
+
+
+
+
 =====================================================================================================
 =====================================================================================================
 =====================================================================================================

@@ -6,17 +6,25 @@ const projectConfig = require('./config/project.json')
 const UserController = require('./controllers/UserController');
 const StoreController = require('./controllers/StoreController');
 const AuthController = require('./controllers/AuthController');
+const ApiController = require('./controllers/ApiController');
 const ForgotPassword = require('./controllers/ForgotPassword');
 const ResetPassword = require('./controllers/ResetPassword');
 
 const authMiddleware = require('./middlewares/auth');
 const permissionMiddleware = require('./middlewares/permission');
+const authApiMiddleware = require('./middlewares/authapi');
 
 const { celebrate, Segments, Joi } = require('celebrate');
 
 const routes  = express.Router();
 
+	// ====================================================
+	// ====================================================
+	// ROTAS DE API
+	// ====================================================
+	// ====================================================
 
+	routes.get('/api/*', authApiMiddleware, ApiController)
 
 	// ====================================================
 	// ====================================================
@@ -65,8 +73,6 @@ const routes  = express.Router();
 	}), AuthController.create); 
 
 
-
-
 	// ====================================================
 	// ====================================================
 	// FECHADAS
@@ -83,8 +89,6 @@ const routes  = express.Router();
 	// DELETAR AUTENTICAÇÃO
 	routes.delete('/auth/*', authMiddleware, AuthController.delete); 
 
-
-
 	// CADASTRO DE USUÁRIOS
 
 	routes.post('/user/*', authMiddleware, permissionMiddleware, celebrate({
@@ -95,10 +99,10 @@ const routes  = express.Router();
 			cpfCnpj:        Joi.string(),
 			birth:          Joi.string(),
 	
-			telephone1:     Joi.string().min(10).max(11),
-			telephone2:     Joi.string().min(10).max(11),
+			telephone1:     Joi.string().min(10).max(13),
+			telephone2:     Joi.string().min(10).max(13),
 			email:          Joi.string().required().email(),
-			whatsapp:       Joi.string().min(10).max(11),
+			whatsapp:       Joi.string().min(10).max(13),
 	
 			address:        Joi.string(),
 			addressNumber: 	Joi.string(),
@@ -128,8 +132,6 @@ const routes  = express.Router();
 
 	}), UserController.index); 
 
-	
-
 
 	routes.put('/user/*', authMiddleware, permissionMiddleware, celebrate({
 
@@ -141,10 +143,10 @@ const routes  = express.Router();
 			cpfCnpj:        Joi.string(),
 			birth:          Joi.string(),
 	
-			telephone1:     Joi.string().min(10).max(11),
-			telephone2:     Joi.string().min(10).max(11),
+			telephone1:     Joi.string().min(10).max(13),
+			telephone2:     Joi.string().min(10).max(13),
 			email:          Joi.string().email(),
-			whatsapp:       Joi.string().min(10).max(11),
+			whatsapp:       Joi.string().min(10).max(13),
 	
 			address:        Joi.string(),
 			addressNumber: Joi.string(),
@@ -174,12 +176,6 @@ const routes  = express.Router();
 		
 	}), UserController.delete); 
 
-
-	
-
-
-
-
 	// CADASTRO DE LOJAS, EDIÇÃO E DELEÇÃO
 
 	routes.post('/store/*', authMiddleware, permissionMiddleware, celebrate({
@@ -194,9 +190,9 @@ const routes  = express.Router();
 			name:           Joi.string().required(),
 			cpfCnpj:        Joi.string(),
 	
-			telephone1:     Joi.string().min(10).max(11),
-			telephone2:     Joi.string().min(10).max(11),
-			whatsapp:       Joi.string().min(10).max(11),
+			telephone1:     Joi.string().min(10).max(13),
+			telephone2:     Joi.string().min(10).max(13),
+			whatsapp:       Joi.string().min(10).max(13),
 	
 			address:        Joi.string(),
 			addressNumber: Joi.string(),
@@ -231,9 +227,9 @@ const routes  = express.Router();
 			name:           Joi.string(),
 			cpfCnpj:        Joi.string(),
 	
-			telephone1:     Joi.string().min(10).max(11),
-			telephone2:     Joi.string().min(10).max(11),
-			whatsapp:       Joi.string().min(10).max(11),
+			telephone1:     Joi.string().min(10).max(13),
+			telephone2:     Joi.string().min(10).max(13),
+			whatsapp:       Joi.string().min(10).max(13),
 	
 			address:        Joi.string(),
 			addressNumber: Joi.string(),
@@ -255,9 +251,7 @@ const routes  = express.Router();
 	}), StoreController.delete); 
 
  
-
 	// Redirecionamento para as APIS de projeto
-
 	projectConfig.map(Project => {
 		
 		routes.all(`/${Project.name}/*`, authMiddleware, async function (req, res) {

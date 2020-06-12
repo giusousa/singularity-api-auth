@@ -8,6 +8,10 @@ const routes = require('./routes');
 const app = express();                  // Cria uma variável para armazenar a aplicação (instanciar a aplicação)
 
 app.use(cookieParser());
+
+
+
+// O cors limita quais domínios podem acessar a Api
 app.use(cors({
     origin: ['http://localhost:3000', 'https://boimanso-frontend-7scc3zwlma-uc.a.run.app'],
     credentials: true
