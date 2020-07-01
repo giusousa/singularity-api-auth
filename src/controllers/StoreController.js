@@ -31,10 +31,8 @@ module.exports = {
     // Busca as lojas disponíveis
     async index(req, res) {
 
-        const level     = req.level;
-        const userId    = req.userId;
-
-        const { page = 1 } =  req.query;
+        const { page } =  req.query;
+        const { level, userId } = req;
 
         // Usuário 'manager' buscam todas as lojas com o mesmo "managerId"
         // Usuários 'superuser' buscam as lojas que eles estão cadastrados.
@@ -57,30 +55,32 @@ module.exports = {
 
         const count = await schema.countDocuments(query);
 
-        const result = await schema.find(query)
-        .skip((page - 1) * 5)
-        .limit(5)
-        .then ((data) => { 
-            //console.log (data); 
-            return data
-        }).catch ((err) => { 
-            console.log (err); 
-        })
 
-        res.header('X-Total-Count', count['count(*)']);
-
-        return res.json(result)
-
+        try {
+            if ( page ) {
+                const result = await schema.find(query)
+                .skip((page - 1) * 5)
+                .limit(10)
+                res.header('X-Total-Count', count['count(*)']);
+                return res.json(result);
+    
+            } else {
+                const result = await schema.find(query)
+                return res.json(result);
+            };
+        } catch(err) {
+            //console.log (err); 
+        }
 
     },
 
     async edit(req, res) {
         
         const infos     = req.body;
-        const { level, userId }     = req;
-        const { storeId }   =  req.query;
+        const _id       = infos._id
+        const { level, userId }    = req;
 
-        const query         = { _id: storeId };
+        const query         = { _id };
         // Um usuário manager só pode alterar lojas que pertençam a ele mesmo
         if (level == 'manager')
             query.managerId = userId
@@ -112,15 +112,15 @@ module.exports = {
     async delete(req, res) {
         
         const { level, userId }     = req;
-        const { storeId }   =  req.query;
+        const { _id }   =  req.query;
 
-        const query         = { _id: storeId };
+        const query         = { _id };
         // Um usuário manager só pode alterar lojas que pertençam a ele mesmo
         if (level == 'manager')
             query.managerId = userId
 
         try {
-            await schema.findByIdAndRemove(storeId);
+            await schema.findByIdAndRemove(_id);
         } catch (err) {
             return res.status(400).send({ error: 'Erro delete item'});
         }

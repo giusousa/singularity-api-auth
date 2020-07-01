@@ -63,6 +63,10 @@ module.exports = async (req, res, next) => {
                 if (!superUser && (managerId != register.managerId))
                     return res.status(400).send({ error: 'You dont have access to the user group'});
 
+                // Um usuário só pode editar para um 'level' que ele seja permitido  
+                if (method == 'PUT' && !Boolean(acess.control.find( a => { return a == req.body.level})))
+                    return res.status(400).send({ error: 'You dont have access to manipulate level'});
+
             } catch (err) {
                 return res.status(400).send({ error: 'User not found'});
             }

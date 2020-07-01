@@ -18,8 +18,6 @@ module.exports =  {
             return res.status(400).send({error: "store not found"})
 
         const user  = await schemaUser.findOne({ telephone1: telephoneUser, project: 'easychat', managerId: store.managerId });
-        if (!user)
-            return res.status(400).send({error: "user not found"})
 
         return res.status(200).send({user, store});
 

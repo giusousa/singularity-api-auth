@@ -247,11 +247,12 @@ QUERY    : _id               Obrigatório para (todos)    // ID do cadastro que 
 auth    : Requer autenticação
 Método  : get
 URL     : /user/<project>
-QUERY   : page                  (number)       Obrigatório para (todos)
+QUERY   : page                  (number)
 
 Obs1. Serão listados sempre usuários de níveis inferiores
 Obs2. 'manager' podem ver todos do grupo
 Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
+Obs4. Função 'page' opcional. Caso utilizada retorna 10 resultados por página solicitada
 
 
 =====================================================================================================
@@ -295,8 +296,8 @@ BODY    :   name            (string)                        Obrigatório para (t
 auth    : Requer autenticação
 Método  : put
 URL     : /store/<project>
-QUERY   :   storeId         (string)                 Obrigatório para (todos)
-BODY    :   name            (string) 
+BODY    :   _id             (string)                    Obrigatório para (todos)
+            name            (string) 
             cpfCnpj         (string) 
 
             telephone1      (string) Min 10 Máx 11
@@ -322,7 +323,7 @@ BODY    :   name            (string)
 auth    : Requer autenticação
 Método  : delete
 URL     : /store/<project>
-QUERY   : storeId                (string)                Obrigatório para (todos)
+QUERY   : _id                   (string)                Obrigatório para (todos)
 
 
 ================================================================================================================================
@@ -333,7 +334,8 @@ QUERY   : storeId                (string)                Obrigatório para (todo
 auth    : Requer autenticação
 Método  : get
 URL     : /store/<project>
-QUERY   : page                  (number)       Obrigatório para (todos)
+QUERY   : page                  (number)      
 
-        // Usuário 'manager' visualizam todas as lojas com o mesmo 'managerId'
-        // Outros usuários visualizam as lojas que constam nos seus cadastros.
+Obs1. Usuário 'manager' visualizam todas as lojas com o mesmo 'managerId'
+Obs2. Outros usuários visualizam as lojas que constam nos seus cadastros.
+Obs3. Função 'page' opcional. Caso utilizada retorna 10 resultados por página solicitada

@@ -63,16 +63,7 @@ module.exports = {
 
             result.password = undefined
 
-            return res.json({ 
-                result, 
-                token: generateToken({ 
-                    id: result._id, 
-                    project: body.project, 
-                    level: body.level,
-                    managerId: result.managerId,
-                    stores: result.stores,
-                }),
-            });
+            return res.json(result);
 
         } catch {
             
@@ -86,11 +77,8 @@ module.exports = {
 
     async index(req, res) {
 
-        const { page = 1 } =  req.query;
-        const project = req.project;
-        const level     = req.level;
-        const managerId = req.managerId;
-        const stores = req.stores;
+        const { page } =  req.query;
+        const { project, level, managerId, stores } = req;
 
         // O usuários com o mesmo mesmo 'project' e 'managerId' que o seu
         // OBS: 'Usuários 'supermanager' não precisam informar managerId
@@ -121,20 +109,23 @@ module.exports = {
         const count = await schema.countDocuments(query);
 
 
-        let result = await schema.find(query)
-        .skip((page - 1) * 5)
-        .limit(5)
-        .then ((data) => { 
-            //console.log (data); 
-            return data
-        }).catch ((err) => { 
-            console.log (err); 
-        })
 
-        res.header('X-Total-Count', count['count(*)']);
 
-        return res.json(result)
-
+        try {
+            if ( page ) {
+                const result = await schema.find(query)
+                .skip((page - 1) * 5)
+                .limit(10)
+                res.header('X-Total-Count', count['count(*)']);
+                return res.json(result);
+    
+            } else {
+                const result = await schema.find(query)
+                return res.json(result);
+            };
+        } catch(err) {
+            //console.log (err); 
+        }
     },
 
 

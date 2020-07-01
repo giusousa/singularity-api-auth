@@ -20,7 +20,7 @@ const routes  = express.Router();
 
 	// ====================================================
 	// ====================================================
-	// ROTAS DE API
+	// ROTAS EXCLUSIVA PARA NOSSAS APIS
 	// ====================================================
 	// ====================================================
 
@@ -117,7 +117,7 @@ const routes  = express.Router();
 			level: 			Joi.string().required(),
 			stores:			Joi.array(),
 
-			attributes:		Joi.object()
+			attributes:		Joi.object().required()
 
 		})
 
@@ -127,7 +127,7 @@ const routes  = express.Router();
 	routes.get('/user/*', authMiddleware , permissionMiddleware, celebrate({
 
 		[Segments.QUERY]: 	Joi.object().keys({
-			page: 			Joi.string(),
+			page: 			Joi.number(),
 		}),
 
 	}), UserController.index); 
@@ -203,7 +203,7 @@ const routes  = express.Router();
 			uf:             Joi.string().length(2),
 			cep:            Joi.string().min(8).max(9),
 				
-			attributes:		Joi.object(),
+			attributes:		Joi.object().required(),
 		})
 
 
@@ -218,12 +218,8 @@ const routes  = express.Router();
 
 	routes.put('/store/*', authMiddleware, permissionMiddleware, celebrate({
 
-		[Segments.QUERY]: Joi.object().keys({
-			storeId:  Joi.string().required()
-		}),
-
 		[Segments.BODY]: Joi.object().keys({
-
+			_id:			Joi.string().required(),
 			name:           Joi.string(),
 			cpfCnpj:        Joi.string(),
 	
@@ -246,7 +242,7 @@ const routes  = express.Router();
 
 	routes.delete('/store/*', authMiddleware, permissionMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
-			storeId:  Joi.string().required()
+			_id:  Joi.string().required()
 		})
 	}), StoreController.delete); 
 

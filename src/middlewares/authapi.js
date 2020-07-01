@@ -1,21 +1,21 @@
 const projectConfig = require('../config/project.json')
 
+/**
+ * Cada projeto possui um token que permite acesso a rotas especiais.
+ * Esta função verifica se o token enviado está correto.
+ */
+
 module.exports = async (req, res, next) => {
 
-    const { token, intent } = req.query;
-    const project 	= req.params[0];
+    const { authorization } = req.headers;
 
-    const proj = projectConfig.find(({name}) => name == project);
+    const convertUrl    = req.params[0].split('/')
+    const projectName   = convertUrl[0]
 
-    if (!proj || proj.token != token)
+    const project = projectConfig.find(({name}) => name == projectName);
+
+    if (!project || project.token != authorization)
         return res.status(400).send({error: 'Project or token incorrect'})
-
-    if (req.query.info)
-        req.info = JSON.parse(req.query.info);
-
-    req.token       = token;
-    req.project     = proj;
-    req.intent      = intent;
 
     next();
 };
