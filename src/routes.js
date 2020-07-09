@@ -6,7 +6,7 @@ const projectConfig = require('./config/project.json')
 const UserController = require('./controllers/UserController');
 const StoreController = require('./controllers/StoreController');
 const AuthController = require('./controllers/AuthController');
-const ApiController = require('./controllers/ApiController');
+const ApiControllerIntents = require('./controllers/ApiControllerIntents');
 const ForgotPassword = require('./controllers/ForgotPassword');
 const ResetPassword = require('./controllers/ResetPassword');
 
@@ -24,7 +24,7 @@ const routes  = express.Router();
 	// ====================================================
 	// ====================================================
 
-	routes.get('/api/*', authApiMiddleware, ApiController)
+	routes.get('/api/*', authApiMiddleware, ApiControllerIntents.router)
 
 	// ====================================================
 	// ====================================================
