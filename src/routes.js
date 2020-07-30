@@ -6,25 +6,15 @@ const projectConfig = require('./config/project.json')
 const UserController = require('./controllers/UserController');
 const StoreController = require('./controllers/StoreController');
 const AuthController = require('./controllers/AuthController');
-const ApiControllerIntents = require('./controllers/ApiControllerIntents');
 const ForgotPassword = require('./controllers/ForgotPassword');
 const ResetPassword = require('./controllers/ResetPassword');
 
 const authMiddleware = require('./middlewares/auth');
 const permissionMiddleware = require('./middlewares/permission');
-const authApiMiddleware = require('./middlewares/authapi');
 
 const { celebrate, Segments, Joi } = require('celebrate');
 
 const routes  = express.Router();
-
-	// ====================================================
-	// ====================================================
-	// ROTAS EXCLUSIVA PARA NOSSAS APIS
-	// ====================================================
-	// ====================================================
-
-	routes.get('/api/*', authApiMiddleware, ApiControllerIntents.router)
 
 	// ====================================================
 	// ====================================================
@@ -90,12 +80,12 @@ const routes  = express.Router();
 	routes.delete('/auth/*', authMiddleware, AuthController.delete); 
 
 	// CADASTRO DE USUÁRIOS
-
-	routes.post('/user/*', authMiddleware, permissionMiddleware, celebrate({
+	routes.post('/user/*', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
 
 			name:           Joi.string().required(),
+			managerId:		Joi.string(),
 			cpfCnpj:        Joi.string(),
 			birth:          Joi.string(),
 	
@@ -121,20 +111,21 @@ const routes  = express.Router();
 
 		})
 
-	}), UserController.create); 
+	}), permissionMiddleware, UserController.create); 
 	
-
-	routes.get('/user/*', authMiddleware , permissionMiddleware, celebrate({
+	routes.get('/user/*', authMiddleware, celebrate({
 
 		[Segments.QUERY]: 	Joi.object().keys({
 			page: 			Joi.number(),
+			cpfCnpj:		Joi.string(),
+			telephone1:     Joi.string().min(10).max(13),
+			telephone2:     Joi.string().min(10).max(13),
+			whatsapp:       Joi.string().min(10).max(13),
 		}),
 
-	}), UserController.index); 
+	}), permissionMiddleware, UserController.index); 
 
-
-	routes.put('/user/*', authMiddleware, permissionMiddleware, celebrate({
-
+	routes.put('/user/*', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
 
@@ -145,7 +136,6 @@ const routes  = express.Router();
 	
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
-			email:          Joi.string().email(),
 			whatsapp:       Joi.string().min(10).max(13),
 	
 			address:        Joi.string(),
@@ -165,29 +155,24 @@ const routes  = express.Router();
 
 		})
 
-	}), UserController.edit); 
+	}), permissionMiddleware, UserController.edit); 
 
-
-	routes.delete('/user/*', authMiddleware, permissionMiddleware, celebrate({
+	routes.delete('/user/*', authMiddleware, celebrate({
 
 		[Segments.QUERY]: Joi.object().keys({
 			_id:  Joi.string().required()
 		}),
 		
-	}), UserController.delete); 
+	}), permissionMiddleware, UserController.delete); 
+
 
 	// CADASTRO DE LOJAS, EDIÇÃO E DELEÇÃO
-
-	routes.post('/store/*', authMiddleware, permissionMiddleware, celebrate({
-
-		[Segments.QUERY]: Joi.object().keys({
-			managerId:  Joi.string(),
-		}),
-
+	routes.post('/store/*', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
 
 			name:           Joi.string().required(),
+			managerId:		Joi.string(),
 			cpfCnpj:        Joi.string(),
 	
 			telephone1:     Joi.string().min(10).max(13),
@@ -207,16 +192,19 @@ const routes  = express.Router();
 		})
 
 
-	}), StoreController.create); 
+	}), permissionMiddleware, StoreController.create); 
 
-	routes.get('/store/*', authMiddleware, permissionMiddleware, celebrate({
+	routes.get('/store/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
-			page: 		Joi.number()
+			page: 			Joi.number(),
+			cpfCnpj:		Joi.string(),
+			telephone1:     Joi.string().min(10).max(13),
+			telephone2:     Joi.string().min(10).max(13),
+			whatsapp:       Joi.string().min(10).max(13),
 		})
-	}), StoreController.index);
+	}), permissionMiddleware, StoreController.index);
 
-
-	routes.put('/store/*', authMiddleware, permissionMiddleware, celebrate({
+	routes.put('/store/*', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
 			_id:			Joi.string().required(),
@@ -238,78 +226,13 @@ const routes  = express.Router();
 			attributes: 	Joi.object(),
 
 		})
-	}), StoreController.edit); 
+	}), permissionMiddleware, StoreController.edit); 
 
-	routes.delete('/store/*', authMiddleware, permissionMiddleware, celebrate({
+	routes.delete('/store/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			_id:  Joi.string().required()
 		})
-	}), StoreController.delete); 
+	}), permissionMiddleware, StoreController.delete); 
 
  
-	// Redirecionamento para as APIS de projeto
-	projectConfig.map(Project => {
-		
-		routes.all(`/${Project.name}/*`, authMiddleware, async function (req, res) {
-
-			// Cria chaves no cabeçalho QUERY com as variáveis decodificadas do token
-			const { userId, managerId, level, project, stores } = req;
-
-			const params = { params: {}}
-
-			// Caso o usuário tenha informado mais alguma QUERY, adicionar
-			for (const prop in req.query) {
-				params.params[prop] = req.query[prop]
-			}
-
-			params.params.userId 	= userId;
-			params.params.managerId = managerId;
-			params.params.level 	= level;
-			params.params.project 	= project;
-			params.params.stores 	= stores;
-
-			// Corpo da requisição (Apenas em POST ou PUT)
-			const data = req.body ;
-
-			const url = process.env.NODE_ENV == 'PROD' 
-				? Project.url 
-				: `http://localhost:${Project.port}/`
-
-			const baseURL = axios.create({ baseURL: url });
-
-			try {
-				const newRoute 	= req.params[0]
-				const method 	= req.method;
-
-				const resApi = 
-					method == 'GET'
-					? await baseURL.get(newRoute, params)
-					: method == 'POST'
-						? await baseURL.post(newRoute, data, params)
-						: method == 'PUT'
-							? await baseURL.put(newRoute, data, params)
-							: method == 'DELETE'
-								? await baseURL.delete(newRoute, params)
-								: false;
-				if (!resApi)
-					return res.status(400).send({ error: 'Erro request router api' });
-
-				const status  = resApi.status;
-				const dataRes = resApi.data;
-
-				return res.status(status).send(dataRes);
-
-			} catch (err) {
-
-
-				const status = err.response ? err.response.status : 400
-				const dataRes 	 = err.response ? err.response.data : 'Not response secondary Api'
-
-				return res.status(status).send({ error: 'Internal api error - ' + JSON.stringify(dataRes) });
-
-			};
-		});
-	});
-
-
 module.exports = routes;        // Permite a exportação da váriavel 'routes'.

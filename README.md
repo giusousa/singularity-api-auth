@@ -30,45 +30,6 @@ REGRA 6 - Nas rotas onde a QUERY 'managerId' é obrigatória.
     // Outros devem informar o 'managerId' da organização (O ID DO MANAGER)
 
 
-
-
-
-
-
-=====================================================================================================
-=====================================================================================================
-=====================================================================================================
-API
-=====================================================================================================
-=====================================================================================================
-=====================================================================================================
-
-1. Intenção:
-    Utilizar funções criadas especialmente para apis de outros projetos do grupo
-
-auth    : Requer autenticação
-Método  : get
-URL     : /api/<project>    
-QUERY   :   token              (string)   Obrigatório para todos;   // Cód de autorização
-            intent             (string)   Obrigatório para todos;   // Intenção
-            
-
-            QUERIES ADICIONAIS
-
-            EASYCHAT - init
-            // Busca os dados da loja acessada e do usuario que esta acessando
-            telephoneUser       (string)   Obrigatório para todos;  // Número consultado USUARIO
-            telephoneStore      (string)   Obrigatório para todos;  // Número consultado STORE
-
-            EASYCHAT - telephoneConsult
-            // Verifica se existe um cadastro de loja ou usuário com o número de telefone informado.
-            telephone      (string)   Obrigatório para todos;  // Número consultado
-            level          (string)   Obrigatório para todos;  // Tipo de cadastro ("user or store")
-            managerId      (string)   Obrigatório (Se info.type for "user");
-
-
-
-
 =====================================================================================================
 =====================================================================================================
 =====================================================================================================
@@ -151,191 +112,115 @@ BODY    :   email           (string)   Obrigatório para (todos)
 =====================================================================================================
 =====================================================================================================
 =====================================================================================================
-USER
-
-    QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', informe 'admin' na QUERY. Para os outros tipos de usuário, informe o managerId padrão da organização que você está manipulando.
-
-=====================================================================================================
-=====================================================================================================
-=====================================================================================================
-
-6. Intenção:
-    Cadastrar novo usuário    
-                         
-auth    : Requer autenticação
-Método  : post
-QUERY   :   managerId       (string)   Obrigatório para ('admin' e 'supermanager') 
-URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'admin' usar 'auth' como nome do projeto, em todos os outros 
-                            casos, a requisição deve ser enviada para a url do projeto do qual o usuário fará parte)
-BODY    :   name            (string)                    Obrigatório para (todos)
-            cpfCnpj         (string) 
-            birth           (string)
-
-            telephone1      (string) Min 10 Máx 11
-            telephone2      (string) Min 10 Máx 11
-            email           (string)                    Obrigatório para (todos)
-            whatsapp        (string) Min 10 Máx 11
-
-            address         (string) 
-            addressNumber   (string) 
-            addressComplement (string)
-            addressRef      (string)
-            district        (string) 
-            city            (string) 
-            uf              (string) 
-            cep             (string) 
-
-            password        (string)                    Obrigatório para (todos) Min 6 Máx 20
-            level           (string)                    Obrigatório para (todos)
-
-            stores          (array)        
-            attributes      (object)             
-
-===========================================================================================================================
-
-7. INTENÇÃO:
-    Editar o perfil de um usuário
-
-auth    : Requer autenticação
-Método  : put
-URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'admin' usar 'auth' como nome do projeto, em todos os outros 
-                            casos, a requisição deve ser enviada para a url do projeto do qual o usuário fará parte)
-
-BODY    :   _id             (string)                    Obrigatório para (todos)    // ID do cadastro que o user quer editar
-            name            (string) 
-            cpfCnpj         (string) 
-            birth           (string)
-
-            telephone1      (string) Min 10 Máx 11
-            telephone2      (string) Min 10 Máx 11
-            email           (string) Obrigatório
-            whatsapp        (string) Min 10 Máx 11
-
-            address         (string) 
-            addressNumber   (string) 
-            addressComplement (string)
-            addressRef      (string)
-            district        (string) 
-            city            (string) 
-            uf              (string) 
-            cep             (string) 
-
-            password        (string) 
-            level           (string) 
-
-            stores          (array)
-            attributes      (object)  
-
-===========================================================================================================================
 
 
-8. INTENÇÃO:
-    Deletar um usuário
+# DOCUMENTAÇÃO
 
-auth    : Requer autenticação
-Método  : delete
-URL     : /user/<project>   (Caso o usuário a ser cadastrado seja do level 'admin' usar 'auth' como nome do projeto, em todos os outros 
-                            casos, a requisição deve ser enviada para a url do projeto do qual o usuário fará parte)
-QUERY    : _id               Obrigatório para (todos)    // ID do cadastro que o user quer apagar
+## Geral
 
-===========================================================================================================================
+### 1. CREATE    
+>Method  :   POST    <br/>
+>BODY    :   ... (createAndUpdateMask format)    <br/>
 
+### 2. INDEX
+>Method  :   GET    <br/>
+>QUERY   :   page                        number     opcional   (Caso queira limitar os resultados)    <br/>
+>            ... (queryMask format)    <br/>
 
-9. INTENÇÃO:
-    Listar usuários
+### 3. EDIT
+>Method  :   PUT    <br/>
+>BODY    :   _id    <br/>
+>            ... (createAndUpdateMask format)    <br/>
 
-auth    : Requer autenticação
-Método  : get
-URL     : /user/<project>
-QUERY   : page                  (number)
-
-Obs1. Serão listados sempre usuários de níveis inferiores
-Obs2. 'manager' podem ver todos do grupo
-Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
-Obs4. Função 'page' opcional. Caso utilizada retorna 10 resultados por página solicitada
+### 4. DELETE
+>Method  :   DELETE    <br/>
+>QUERY   :   _id    <br/>
 
 
-=====================================================================================================
-=====================================================================================================
-=====================================================================================================
-STORE
-=====================================================================================================
-=====================================================================================================
-=====================================================================================================
+## STORE
+>
+>ROUTE:      STORE     
+>URL:        /store <br/>
+>METHODS:    POST | GET | PUT | DELETE
 
-10. INTENÇÃO:
-    Cadastrar nova loja
+createAndUpdateMask:
+>
+>           name            (string)                        Required
+>           managerId       (string)                        Required from level (supermanager) (1) (2)
+>           attributes      (object)                        Required
+>           cpfCnpj         (string)                        Optional
+>           telephone1      (string) Min 10 Máx 11          Optional
+>           telephone2      (string) Min 10 Máx 11          Optional
+>           whatsapp        (string) Min 10 Máx 11          Optional
+>           address         (string)                        Optional
+>           addressNumber   (string)                        Optional
+>           addressComplement (string)                      Optional
+>           addressRef      (string)                        Optional
+>           district        (string)                        Optional
+>           city            (string)                        Optional
+>           uf              (string)                        Optional
+>           cep             (string)                        Optional
+>           
+>
+> (1) - // ID do user que será próprietário da store. Necessário apenas caso você seja um 'supermanager',
+> pois caso você seja um 'manager', esse valor será setado automáticamente.
+> (2) - // Não é possível alterar este campo após a criação da loja, por isso, esse campo não é reconhecido
+> se você solicitar atualização do arquivo. (method PUT)
+>
 
-auth    : Requer autenticação
-Método  : post
-URL     : /store/<project>
-QUERY   :   managerId       (string)                        Obrigatório para (supermanager)  // ID do usuário próprietário da loja
-BODY    :   name            (string)                        Obrigatório para (todos)
-            cpfCnpj         (string) 
+queryMask:
+>           cpfCnpj         (string)                        
+>           telephone1      (string) Min 10 Máx 11          
+>           telephone2      (string) Min 10 Máx 11          
+>           whatsapp        (string) Min 10 Máx 11          
 
-            telephone1      (string) Min 10 Máx 11
-            telephone2      (string) Min 10 Máx 11
-            whatsapp        (string) Min 10 Máx 11
+> Obs1. Usuário 'manager' podem acessar as lojas com mesmo 'managerId' que o seu.
+> Obs2. Outros usuários podem acessar as lojas que constam nos seus cadastros.
 
-            address         (string) 
-            addressNumber   (string) 
-            addressComplement (string)
-            addressRef      (string)
-            district        (string) 
-            city            (string) 
-            uf              (string) 
-            cep             (string)
+## USER
+>
+>ROUTE:      USER     
+>URL:        /user <br/>
+>METHODS:    POST | GET | PUT | DELETE
 
-            attributes      (object) 
+createAndUpdateMask:
+>            name            (string)                       Required
+>            managerId       (string)                       Required from level (admin) and (supermanager) (1) (2)
+>            cpfCnpj         (string)                       Optional
+>            birth           (string)                       Optional
+>            telephone1      (string) Min 10 Máx 11         Optional
+>            telephone2      (string) Min 10 Máx 11         Optional
+>            email           (string)                       Required (2)
+>            whatsapp        (string) Min 10 Máx 11         Optional
+>            address         (string)                       Optional
+>            addressNumber   (string)                       Optional
+>            addressComplement (string)                     Optional
+>            addressRef      (string)                       Optional
+>            district        (string)                       Optional
+>            city            (string)                       Optional 
+>            uf              (string)                       Optional 
+>            cep             (string)                       Optional 
+>            password        (string)                       Required Min 6 Máx 20
+>            level           (string)                       Required (3)
+>            stores          (array)                        Optional (3)    
+>            attributes      (object)                       Optional
+>
+>
+> (1) - // ID do grupo que o usuário criado fará parte. Necessário apenas caso você seja um 'admin' ou 'supermanager',
+> pois caso você seja outro level, esse valor será setado automáticamente.
+> (2) - // Não é possível alterar este campo após a criação do user, por isso, esse campo não é reconhecido
+> se você solicitar atualização do arquivo. (method PUT)
+> (3) - Campos não podem ser alterados pelo próprio user, apenas por alguém de level superior.
+>
 
-=============================================================================================================================
+queryMask:
+>           cpfCnpj         (string)                        
+>           telephone1      (string) Min 10 Máx 11          
+>           telephone2      (string) Min 10 Máx 11          
+>           whatsapp        (string) Min 10 Máx 11  
 
-11. Intenção
-    Editar loja
-
-auth    : Requer autenticação
-Método  : put
-URL     : /store/<project>
-BODY    :   _id             (string)                    Obrigatório para (todos)
-            name            (string) 
-            cpfCnpj         (string) 
-
-            telephone1      (string) Min 10 Máx 11
-            telephone2      (string) Min 10 Máx 11
-            whatsapp        (string) Min 10 Máx 11
-
-            address         (string) 
-            addressNumber   (string) 
-            addressComplement (string)
-            addressRef      (string)
-            district        (string) 
-            city            (string) 
-            uf              (string) 
-            cep             (string)
-
-            attributes      (object) 
-
-================================================================================================================================
-
-12. Intenção:
-    Deletar uma loja
-
-auth    : Requer autenticação
-Método  : delete
-URL     : /store/<project>
-QUERY   : _id                   (string)                Obrigatório para (todos)
-
-
-================================================================================================================================
-
-13. Intenção:
-    Listar uma loja
-
-auth    : Requer autenticação
-Método  : get
-URL     : /store/<project>
-QUERY   : page                  (number)      
-
-Obs1. Usuário 'manager' visualizam todas as lojas com o mesmo 'managerId'
-Obs2. Outros usuários visualizam as lojas que constam nos seus cadastros.
-Obs3. Função 'page' opcional. Caso utilizada retorna 10 resultados por página solicitada
+>   Obs1. Um user tem acesso somente a users de niveis inferiores.
+>   Obs2. 'manager' podem ver todos do grupo
+>   Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
+>   Obs4. Caso o usuário a ser criado/manipulado seja do level 'admin' usar 'auth' como nome do projeto
+>   Obs5.     QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', informe 'admin' na QUERY. Para os outros tipos de usuário, >  >   informe o managerId padrão da organização que você está manipulando.

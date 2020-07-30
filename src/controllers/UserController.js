@@ -1,29 +1,14 @@
 const schema = require('../mongo/user');
-const generateToken = require('../utils/generateToken');
+const Mongo = require('./scripts/mongo');
 const permission = require('../config/permission.json')
 
 module.exports = {
 
     async create(req, res) {
 
-        const body = req.body;
-        const { email } = req.body;
-
-        const queryManagerId = req.query.managerId;
-
-        // Informações do usuário autenticado
-        const level             = req.level;
-        const userId            = req.userId;
-        const managerId         = req.managerId;
-        const authSuper         = Boolean(level == 'admin' || level == 'supermanager')
-
-        // Informações do usuário que será cadastrado
-        const registerLevel     = req.body.level;
-
-        // Se o criador for um usuário Super
-        // devera informar qual será o MANAGERID daquele cadastro por uma QUERY
-        if (authSuper && !queryManagerId)
-            return res.status(400).send({ error: 'need to inform the query: ManagerId'});
+        const { body, userId, project } = req;
+        // level do usuário que será cadastrado
+        const {level: registerLevel, email, managerId}     = body;
 
         body.creatorId = userId;
 
@@ -35,154 +20,72 @@ module.exports = {
                 ? 'auth' 
                 : registerLevel == 'supermanager'
                     ? req.params[0]
-                    : req.project;
-
-
-        // Ao criar novos usuários
-        //      Usuário super - 'managerId' é definido pela query enviada
-        //      Usuários normais - 'managerId' é igual a sua própria
-        body.managerId = authSuper ? queryManagerId : managerId
-
+                    : project;
 
         try {
-
-            if (await schema.findOne({ email, managerId: body.managerId}))
+            if (await schema.findOne({ email, managerId }))
                 return res.status(400).send({ error: 'User already exists'});
-                
-            const result = await schema.create(body);
 
+            const dataCreate = await Mongo.create(res, schema, body);
+            const { _id } = dataCreate;
             // Se o usuário que está sendo cadastrado for um manager, o 'managerId' é o seu próprio ID
             if (registerLevel == 'manager') {
-                await schema.findOneAndUpdate({ _id: result._id}, {
-                    '$set': {
-                        managerId: result._id,
-                    }
+                await schema.findOneAndUpdate({ _id }, {
+                    '$set': { managerId: _id}
                 });
-                result.managerId = result._id
+                dataCreate.managerId = _id
             }
 
-            result.password = undefined
+            dataCreate.password = undefined
+            return res.send(dataCreate);
 
-            return res.json(result);
+        } catch(err) {
 
-        } catch {
-            
             return res.status(400).send({ error: 'Erro User Controller'});
-        }
+        };
+
     },
-
-
-
-
 
     async index(req, res) {
 
-        const { page } =  req.query;
-        const { project, level, managerId, stores } = req;
+        const { project, level, managerId, stores, query } = req;
 
-        // O usuários com o mesmo mesmo 'project' e 'managerId' que o seu
-        // OBS: 'Usuários 'supermanager' não precisam informar managerId
-        // Usuário 'manager', 'superuser' e 'user' podem listar apenas contas de leveis inferiores
-        const query = level == 'supermanager' 
-            ? { $and: [ { project }]}
-            : { $and: [ { managerId, project, level: { $in: permission[level].control}  }]};
-
+        // (supermanager) pode acessar usuário de todos os níveis do seu projeto
+        if (level == 'supermanager') {
+            query.project = project
+        // Outros usuários podem acessar apenas usuários com o mesmo 'managerId' e
+        // que seja de level inferior.
+        } else {
+            query.managerId = managerId
+            query.level = {$in: permission[level].control}
+        }
+        
         // 'superuser' e 'user' podem listar apenas usuários de suas lojas
         if (level == 'superuser' || level == 'user') {
-
-            // Caso o usuário faça parte de pelo menos 1 loja
-            if (stores.length > 0) {
-                const or = [];
-                // Buscar usuários que façam parte de uma de suas lojas
-                stores.map(_id => {
-                    or.push({ stores: _id })
-                })
-
-                query.$and.push({$or: or})
-
-            } else {
+            if (stores.length === 0)
                 return res.status(400).send({ error: 'Erro. 0 stores registers in user'});
-            }
-        };
-
-
-        const count = await schema.countDocuments(query);
-
-
-
-
-        try {
-            if ( page ) {
-                const result = await schema.find(query)
-                .skip((page - 1) * 5)
-                .limit(10)
-                res.header('X-Total-Count', count['count(*)']);
-                return res.json(result);
-    
-            } else {
-                const result = await schema.find(query)
-                return res.json(result);
-            };
-        } catch(err) {
-            //console.log (err); 
+            // Caso o usuário faça parte de pelo menos 1 loja
+            // Buscar usuários que façam parte de uma de suas lojas
+            query.$or  = [];
+            stores.map(_id =>  query.$or.push({_id}) )
         }
+
+        res.send(await Mongo.index(res, schema, query));
+
     },
-
-
-
-
-
 
     async edit(req, res) {
         
-        const body = req.body;
-        const _id = body._id
-
-        // Ninguém pode alterar esses campos de um usuário
-        delete body._id
-        delete body.email 
-        delete body.project 
-        delete body.passwordResetToken
-        delete body.passwordResetExpires
-        delete body.creatorId
-        delete body.managerId  
-
+        const { body, userId } = req;
         // Se o usuário estiver tentando atualizar seu próprio cadastro
-        if (req.userId === _id) {
+        if (userId === body._id) {
             delete body.level              
             delete body.stores             
         }
-
-        try {
-            const update = await schema.findOneAndUpdate({ _id }, {
-                '$set': body
-            });
-
-            return res.json(update);
-        } catch (err) {
-            
-            return res.status(400).send({ error: 'Erro edit item'});
-        }
-
-        
-
+        res.send(await Mongo.edit(res, schema, body, req.query));
     },
-
-
-
 
     async delete(req, res) {
-       
-        const { _id } = req.query;
-
-        try {
-            await schema.findByIdAndRemove(_id);
-        } catch (err) {
-            return res.status(400).send({ error: 'Erro delete item'});
-        }
-
-        return res.json();
-
+        await Mongo.delete(res, schema, req.query);
     },
-
 };
