@@ -51,15 +51,11 @@ const routes  = express.Router();
 
 	// AUTENTICAÇÃO
 	routes.post('/auth/*', celebrate({
-		[Segments.QUERY]: 	Joi.object().keys({
-			managerId: 		Joi.string().required()
-		}),
-
 		[Segments.BODY]: 	Joi.object().keys({
 			email:  		Joi.string().required(),
 			password:  		Joi.string().required(),
+			managerId: 		Joi.string(),
 		})
-
 	}), AuthController.create); 
 
 

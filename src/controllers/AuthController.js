@@ -7,9 +7,7 @@ module.exports = {
 
     async create(req, res) {
 
-        const managerId = req.query.managerId;
-
-        const { email, password } = req.body
+        const { email, password, managerId = 'admin' } = req.body
 
         // Verifica se o usuário existe no banco de dados
         const result = await schema.findOne({ email, managerId }).select('name email password level project stores managerId attributes');

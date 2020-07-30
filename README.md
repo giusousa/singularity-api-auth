@@ -44,9 +44,9 @@ AUTH
 auth    : Não requer autenticação
 Método  : post
 URL     : /auth/<project>   (Se você for admin, usar 'auth' como nome de projeto)
-QUERY   : managerId         (string)   Obrigatório para (superuser, manager)
-BODY    :   email           (string)   Obrigatório para (todos)
-            password        (string)   Obrigatório para (todos)
+BODY   :  managerId       (string)   Obrigatório para (superuser, manager)
+          email           (string)   Obrigatório para (todos)
+          password        (string)   Obrigatório para (todos)
 
 // managerId = Referência do manager do qual aquele cadastro pertence
 
