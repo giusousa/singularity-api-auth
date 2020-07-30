@@ -30,7 +30,7 @@ module.exports = async (req, res, next) => {
 
             // Se o criador for um usuário Super
             // devera informar qual será o MANAGERID daquele cadastro              
-            if (superUser && !body.managerId && body.level !== 'admin' && body.level !== 'supermanager'))
+            if (superUser && !body.managerId && body.level !== 'admin' && body.level !== 'supermanager')
                 return res.status(400).send({ error: 'need to inform the query: ManagerId'});
             if (!superUser)
                 req.body.managerId = managerId
