@@ -8,7 +8,7 @@ module.exports = {
 
         const { body, userId, project } = req;
         // level do usuário que será cadastrado
-        const {level: registerLevel, email, managerId}     = body;
+        const {level: registerLevel, email, managerId = 'admin'}     = body;
 
         body.creatorId = userId;
 
@@ -21,6 +21,8 @@ module.exports = {
                 : registerLevel == 'supermanager'
                     ? req.params[0]
                     : project;
+
+        body.managerId = managerId;
 
         try {
             if (await schema.findOne({ email, managerId }))
