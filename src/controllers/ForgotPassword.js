@@ -11,10 +11,6 @@ module.exports = {
 
 
 
-        
-
-
-
         try {
            
             // Buscar usuários pelo e-mail
