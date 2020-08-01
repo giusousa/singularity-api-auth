@@ -10,6 +10,8 @@ module.exports = {
         const { email } = req.body;
 
 
+        
+
         try {
            
             // Buscar usuários pelo e-mail
