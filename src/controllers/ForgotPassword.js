@@ -10,7 +10,7 @@ module.exports = {
         const { email } = req.body;
 
         try {
-            
+           
             // Buscar usuários pelo e-mail
             const user = await schema.findOne({ email, managerId });
 
