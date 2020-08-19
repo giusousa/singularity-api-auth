@@ -8,7 +8,7 @@ module.exports = {
         };
     },
     
-    async index (res, schema, query) {
+    async index (res, schema, query, select) {
         const { page } =  query;
         delete query.page;
         try {
@@ -17,11 +17,12 @@ module.exports = {
                 const data = await schema.find(query)
                 .skip((page - 1) * 10)
                 .limit(10)
+                .select(select)
 
                 res.header('X-Total-Count', count['count(*)']);
                 return data;
             } else {
-                const data = await schema.find(query)
+                const data = await schema.find(query).select(select)
                 return data;
             };
         } catch(err) {
