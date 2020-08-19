@@ -8,9 +8,7 @@ module.exports = {
 
         const { managerId } = req.query;
         const { email } = req.body;
-
-
-
+        
         try {
            
             // Buscar usuários pelo e-mail

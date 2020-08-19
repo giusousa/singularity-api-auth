@@ -169,7 +169,8 @@ createAndUpdateMask:
 >
 
 queryMask:
->           cpfCnpj         (string)                        
+>           cpfCnpj         (string)   
+>           _id             (string)     
 >           telephone1      (string) Min 10 Máx 11          
 >           telephone2      (string) Min 10 Máx 11          
 >           whatsapp        (string) Min 10 Máx 11          

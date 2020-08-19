@@ -193,6 +193,7 @@ const routes  = express.Router();
 	routes.get('/store/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			page: 			Joi.number(),
+			_id:			Joi.string(),
 			cpfCnpj:		Joi.string(),
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
