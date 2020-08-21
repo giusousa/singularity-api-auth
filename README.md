@@ -173,8 +173,8 @@ queryMask:
 >           _id             (string)     
 >           telephone1      (string) Min 10 Máx 11          
 >           telephone2      (string) Min 10 Máx 11          
->           whatsapp        (string) Min 10 Máx 11          
-
+>           whatsapp        (string) Min 10 Máx 11
+     
 > Obs1. Usuário 'manager' podem acessar as lojas com mesmo 'managerId' que o seu.
 > Obs2. Outros usuários podem acessar as lojas que constam nos seus cadastros.
 
@@ -206,7 +206,7 @@ createAndUpdateMask:
 >            stores          (array)                        Optional (3)    
 >            attributes      (object)                       Optional
 >
->
+
 > (1) - // ID do grupo que o usuário criado fará parte. Necessário apenas caso você seja um 'admin' ou 'supermanager',
 > pois caso você seja outro level, esse valor será setado automáticamente.
 > (2) - // Não é possível alterar este campo após a criação do user, por isso, esse campo não é reconhecido
@@ -219,6 +219,7 @@ queryMask:
 >           telephone1      (string) Min 10 Máx 11          
 >           telephone2      (string) Min 10 Máx 11          
 >           whatsapp        (string) Min 10 Máx 11  
+>           attributes      (object)
 
 >   Obs1. Um user tem acesso somente a users de niveis inferiores.
 >   Obs2. 'manager' podem ver todos do grupo
