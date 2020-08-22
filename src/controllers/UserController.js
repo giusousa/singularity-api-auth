@@ -42,9 +42,6 @@ module.exports = {
                 dataCreate.managerId = _id
             }
 
-            dataCreate.password = undefined
-            dataCreate.secrets = undefined
-
             return res.send(dataCreate);
 
         } catch(err) {
