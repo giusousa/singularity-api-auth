@@ -44,7 +44,8 @@ let schema = new mongoose.Schema({
     },
 
     secrets: {
-        type: 'Object'
+        type: 'Object',
+        select: false,
     },
 
     attributes: {

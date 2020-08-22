@@ -77,7 +77,7 @@ module.exports = {
             query.$or  = [];
             stores.map(_id =>  query.$or.push({_id}) )
         }
-        query.secrets = undefined;
+
         res.send(await Mongo.index(res, schema, query));
     },
 
