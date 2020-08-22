@@ -6,7 +6,7 @@ module.exports = {
 
     async create(req, res) {
 
-        const { body, userId, project } = req;
+        const { body, userId, project, level } = req;
         // level do usuário que será cadastrado
         const {level: registerLevel, email, managerId = 'admin'}     = body;
         
@@ -41,7 +41,7 @@ module.exports = {
                 });
                 dataCreate.managerId = _id
             }
-
+            delete dataCreate.password;
             return res.send(dataCreate);
 
         } catch(err) {
@@ -80,7 +80,7 @@ module.exports = {
 
     async edit(req, res) {
         
-        const { body, userId } = req;
+        const { body, userId, level } = req;
         const superUser = (level == 'admin' || level == 'supermanager')
         
         // Se o usuário estiver tentando atualizar seu próprio cadastro
