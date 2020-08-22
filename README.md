@@ -203,7 +203,8 @@ createAndUpdateMask:
 >            cep             (string)                       Optional 
 >            password        (string)                       Required Min 6 Máx 20
 >            level           (string)                       Required (3)
->            stores          (array)                        Optional (3)    
+>            stores          (array)                        Optional (3)  
+>            secrets         (array)                        Optional (4) 
 >            attributes      (object)                       Optional
 >
 
@@ -212,7 +213,8 @@ createAndUpdateMask:
 > (2) - // Não é possível alterar este campo após a criação do user, por isso, esse campo não é reconhecido
 > se você solicitar atualização do arquivo. (method PUT)
 > (3) - Campos não podem ser alterados pelo próprio user, apenas por alguém de level superior.
->
+> (4) - O campo secrets é utilizado para armazenar chaves secretas. Por este motivo, esta chave não é retornada
+> quando você receber informações de um usuário. Apenas superusuários podem criar e editar.
 
 queryMask:
 >           cpfCnpj         (string)                        

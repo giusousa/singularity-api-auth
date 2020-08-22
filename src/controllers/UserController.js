@@ -9,6 +9,10 @@ module.exports = {
         const { body, userId, project } = req;
         // level do usuário que será cadastrado
         const {level: registerLevel, email, managerId = 'admin'}     = body;
+        
+        const superUser = (level == 'admin' || level == 'supermanager')
+        if (!superUser)
+            delete body.secrets
 
         body.creatorId = userId;
 
