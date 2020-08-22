@@ -119,7 +119,7 @@ const routes  = express.Router();
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
 			whatsapp:       Joi.string().min(10).max(13),
-			secrets:		Joi.object(),
+			secrets:		Joi.string(),
 			attributes:		Joi.string()
 		}),
 
