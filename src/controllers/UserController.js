@@ -39,6 +39,8 @@ module.exports = {
             }
 
             dataCreate.password = undefined
+            dataCreate.secrets = undefined
+
             return res.send(dataCreate);
 
         } catch(err) {
@@ -71,19 +73,23 @@ module.exports = {
             query.$or  = [];
             stores.map(_id =>  query.$or.push({_id}) )
         }
-
+        query.secrets = undefined;
         res.send(await Mongo.index(res, schema, query));
-
     },
 
     async edit(req, res) {
         
         const { body, userId } = req;
+        const superUser = (level == 'admin' || level == 'supermanager')
+        
         // Se o usuário estiver tentando atualizar seu próprio cadastro
         if (userId === body._id) {
             delete body.level              
-            delete body.stores             
+            delete body.stores            
         }
+        if (!superUser)
+            delete body.secrets
+
         res.send(await Mongo.edit(res, schema, body, req.query));
     },
 

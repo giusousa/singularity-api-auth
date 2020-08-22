@@ -43,6 +43,10 @@ let schema = new mongoose.Schema({
         type: 'Object',
     },
 
+    secrets: {
+        type: 'Object'
+    },
+
     attributes: {
         type: 'Object',
     },

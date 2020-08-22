@@ -102,8 +102,10 @@ const routes  = express.Router();
 			password:       Joi.string().required().min(6).max(20),
 			level: 			Joi.string().required(),
 			stores:			Joi.array(),
+			secrets:		Joi.array(),
 
 			attributes:		Joi.object().required()
+			
 
 		})
 
@@ -117,6 +119,7 @@ const routes  = express.Router();
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
 			whatsapp:       Joi.string().min(10).max(13),
+			secrets:		Joi.array(),
 			attributes:		Joi.string()
 		}),
 
@@ -147,7 +150,8 @@ const routes  = express.Router();
 			password:       Joi.string().min(6).max(20),
 			level: 			Joi.string(),					//'admin', 'manager' and 'user'
 			stores:			Joi.array(),
-
+			secrets:		Joi.array(),
+			
 			attributes:		Joi.object(),
 
 		})
