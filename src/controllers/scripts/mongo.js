@@ -11,10 +11,19 @@ module.exports = {
     async index (res, schema, query, select) {
         const { page } =  query;
         delete query.page;
+
+        const newQuery = Object.keys(query).reduce((acc, key) => {
+            // Enviar dados por req.query transforma os valores em strings. Essa função identifica
+            // objetos que tenham sido convertidos em strings e os converte novamente para JSON.
+            if (query[key].slice(0,1) === '{')
+                return {...acc, [key]: JSON.parse(query[key])}
+            return {...acc, [key]: query[key]}  
+        },{});
+
         try {
             if ( page ) {
-                const count = await schema.countDocuments(query);
-                const data = await schema.find(query)
+                const count = await schema.countDocuments(newQuery);
+                const data = await schema.find(newQuery)
                 .skip((page - 1) * 10)
                 .limit(10)
                 .select(select)
@@ -22,7 +31,8 @@ module.exports = {
                 res.header('X-Total-Count', count['count(*)']);
                 return data;
             } else {
-                const data = await schema.find(query).select(select)
+                
+                const data = await schema.find({project: 'easychat'}).select(select)
                 return data;
             };
         } catch(err) {
