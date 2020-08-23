@@ -120,7 +120,8 @@ const routes  = express.Router();
 			telephone2:     Joi.string().min(10).max(13),
 			whatsapp:       Joi.string().min(10).max(13),
 			secrets:		Joi.string(),
-			attributes:		Joi.string()
+			attributes:		Joi.string(),
+			managerId:		Joi.string(),
 		}),
 
 	}), permissionMiddleware, UserController.index); 

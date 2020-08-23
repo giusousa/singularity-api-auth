@@ -222,6 +222,8 @@ queryMask:
 >           telephone2      (string) Min 10 Máx 11          
 >           whatsapp        (string) Min 10 Máx 11  
 >           attributes      (object)
+>           managerId       (string)
+>           secrets         (array)
 
 >   Obs1. Um user tem acesso somente a users de niveis inferiores.
 >   Obs2. 'manager' podem ver todos do grupo
