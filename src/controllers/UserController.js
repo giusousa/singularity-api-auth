@@ -42,6 +42,7 @@ module.exports = {
                 dataCreate.managerId = _id
             }
             delete dataCreate.password;
+            delete dataCreate.secrets;
             return res.send(dataCreate);
 
         } catch(err) {
@@ -74,7 +75,7 @@ module.exports = {
             stores.map(_id =>  query.$or.push({stores: _id}) )
         }
 
-        res.send(await Mongo.index(res, schema, query));
+        res.send(await Mongo.index(res, schema, query, '-secrets'));
     },
 
     async edit(req, res) {
