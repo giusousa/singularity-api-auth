@@ -72,7 +72,7 @@ module.exports = {
             // Caso o usuário faça parte de pelo menos 1 loja
             // Buscar usuários que façam parte de uma de suas lojas
             query.$or  = [];
-            stores.map(_id =>  query.$or.push({_id}) )
+            stores.map(_id =>  query.$or.push({stores: _id}) )
         }
 
         res.send(await Mongo.index(res, schema, query));
