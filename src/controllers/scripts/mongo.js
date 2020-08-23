@@ -32,7 +32,7 @@ module.exports = {
                 return data;
             } else {
                 
-                const data = await schema.find({project: 'easychat'}).select(select)
+                const data = await schema.find(newQuery).select(select)
                 return data;
             };
         } catch(err) {
