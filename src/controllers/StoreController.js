@@ -4,10 +4,7 @@ const Mongo = require('./scripts/mongo');
 function formateBody (body) {
     const { attributes, ...rest } = body;
     const newBody = { ...rest };
-    Object.keys(attributes).map(prop => {
-        newBody['attributes.'+prop] = attributes[prop];
-        delete attributes[prop];
-    });
+    Object.keys(attributes).map(prop =>  newBody['attributes.'+prop] = attributes[prop] );
     return newBody
 };
 
