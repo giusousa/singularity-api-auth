@@ -131,6 +131,8 @@ BODY    :   email           (string)   Obrigatório para (todos)
 >Method  :   PUT    <br/>
 >BODY    :   _id    <br/>
 >            ... (createAndUpdateMask format)    <br/>
+> Caso alguma propriedade de 'attributes' esteja sendo atualizada, o sistema identificará quais props você
+> está informando e atualizará apenas as respectivas chaves.
 
 ### 4. DELETE
 >Method  :   DELETE    <br/>

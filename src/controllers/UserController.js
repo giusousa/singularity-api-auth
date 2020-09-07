@@ -2,6 +2,13 @@ const schema = require('../mongo/user');
 const Mongo = require('./scripts/mongo');
 const permission = require('../config/permission.json')
 
+function formateBody (body) {
+    const { attributes, ...rest } = body;
+    const newBody = { ...rest };
+    Object.keys(attributes).map(prop =>  newBody['attributes.'+prop] = attributes[prop] );
+    return newBody
+};
+
 module.exports = {
 
     async create(req, res) {
@@ -91,7 +98,9 @@ module.exports = {
         if (!superUser)
             delete body.secrets
 
-        res.send(await Mongo.edit(res, schema, body, req.query));
+        const newBody = formateBody(req.body);
+        res.send(await Mongo.edit(res, schema, newBody, req.query));
+
     },
 
     async delete(req, res) {
