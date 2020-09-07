@@ -52,6 +52,7 @@ module.exports = {
             return res.status(400).send({ error: 'Edit database fail'});
         };
     },
+    
     async delete ( res, schema, query ) {
         try {
             const data = await schema.findOneAndRemove(query)
