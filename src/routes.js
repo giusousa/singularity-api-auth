@@ -122,6 +122,8 @@ const routes  = express.Router();
 			secrets:		Joi.string(),
 			attributes:		Joi.string(),
 			managerId:		Joi.string(),
+			level: 			Joi.string(),
+			stores:			Joi.array(),
 		}),
 
 	}), permissionMiddleware, UserController.index); 

@@ -226,6 +226,8 @@ queryMask:
 >           attributes      (object)
 >           managerId       (string)
 >           secrets         (array)
+>           stores          (array)                        
+>           level           (string)                      
 
 >   Obs1. Um user tem acesso somente a users de niveis inferiores.
 >   Obs2. 'manager' podem ver todos do grupo
