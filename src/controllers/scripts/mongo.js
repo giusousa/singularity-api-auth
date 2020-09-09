@@ -11,11 +11,12 @@ module.exports = {
     async index (res, schema, query, select) {
         const { page } =  query;
         delete query.page;
+        
 
         const newQuery = Object.keys(query).reduce((acc, key) => {
             // Enviar dados por req.query transforma os valores em strings. Essa função identifica
             // objetos que tenham sido convertidos em strings e os converte novamente para JSON.
-            if (query[key].slice(0,1) === '{')
+            if (typeof query[key] === 'string' && query[key].slice(0,1) === '{')
                 return {...acc, [key]: JSON.parse(query[key])}
             return {...acc, [key]: query[key]}  
         },{});
