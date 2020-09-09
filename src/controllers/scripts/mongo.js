@@ -12,7 +12,6 @@ module.exports = {
         const { page } =  query;
         delete query.page;
         
-
         const newQuery = Object.keys(query).reduce((acc, key) => {
             // Enviar dados por req.query transforma os valores em strings. Essa função identifica
             // objetos que tenham sido convertidos em strings e os converte novamente para JSON.

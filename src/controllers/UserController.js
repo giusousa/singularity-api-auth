@@ -69,9 +69,14 @@ module.exports = {
         // que seja de level inferior.
         } else {
             query.managerId = managerId
-            query.level = {$in: permission[level].control}
-        }
-        
+            
+            if (query.level && !permission[level].control.includes(query.level)) 
+                return res.status(400).send({ error: 'Erro. Você não tem acesso ao level solicitado'});
+            if (!query.level)
+                query.level = {$in: permission[level].control}
+
+        };
+
         // 'superuser' e 'user' podem listar apenas usuários de suas lojas
         if (level == 'superuser' || level == 'user') {
             if (stores.length === 0)
