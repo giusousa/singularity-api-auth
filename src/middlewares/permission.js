@@ -56,7 +56,7 @@ module.exports = async (req, res, next) => {
             try {   
                 const register = await userSchema.findOne({  _id })
  
-                // Bloqueia usuários que estejam tentando editar dados de um alguém do nível superior 
+                // Bloqueia usuários que estejam tentando editar dados de um alguém do nível igual ou superior 
                 if (!Boolean(acess.control.find( a => { return a == register.level})))
                     return res.status(400).send({ error: 'You dont have access to the user level'});
  
