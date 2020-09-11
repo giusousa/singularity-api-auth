@@ -17,7 +17,7 @@ module.exports = {
         res.send(await Mongo.index(res, schema, req.query));
     },
     async edit(req, res) {
-        const newBody = formateBody(req.body);
+        const newBody = req.body.attributes ? formateBody(req.body) : req.body;
         res.send(await Mongo.edit(res, schema, newBody, req.query));
     },
     async delete(req, res) {
