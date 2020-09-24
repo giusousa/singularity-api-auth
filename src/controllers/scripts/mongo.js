@@ -58,7 +58,7 @@ module.exports = {
             const data = await schema.findOneAndRemove(query)
             if (!data)
                 return res.status(400).send({ error: 'User not found'});
-            return res.status(200).send();
+            return res.status(200).send({_id: data._id, managerId: data.managerId});
         } catch (err) {
             return res.status(400).send({ error: 'Delete database fail'});
         }
