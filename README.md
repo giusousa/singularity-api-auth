@@ -233,4 +233,4 @@ queryMask:
 >   Obs2. 'manager' podem ver todos do grupo
 >   Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
 >   Obs4. Caso o usuário a ser criado/manipulado seja do level 'admin' usar 'auth' como nome do projeto
->   Obs5.     QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', informe 'admin' na QUERY. Para os outros tipos de usuário, >>   informe o managerId padrão da organização que você está manipulando.
+>   Obs5.     QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', 'manager',informe 'admin' na QUERY. Para os outros tipos de usuário, >>   informe o managerId padrão da organização que você está manipulando.
