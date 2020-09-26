@@ -103,6 +103,11 @@ module.exports = {
         if (!superUser)
             delete body.secrets
 
+
+        console.log(req.body)
+
+
+
         const newBody = req.body.attributes ? formateBody(req.body) : req.body;
         res.send(await Mongo.edit(res, schema, newBody, req.query));
 

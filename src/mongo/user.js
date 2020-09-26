@@ -72,6 +72,14 @@ schema.pre('save', async function(next) {
     next();
 });
 
+schema.pre('findOneAndUpdate', async function(next) {
+    const password = this.getUpdate().$set.password;
+    if (password) {
+        const hash = await bcrypt.hash(password, 10);
+        this.getUpdate().$set.password = hash;
+    }
+    next();
+});
 
 let model = mongoose.model( 'User', schema)
 module.exports = model
