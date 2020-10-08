@@ -48,8 +48,9 @@ module.exports = {
                 });
                 dataCreate.managerId = _id
             }
-            delete dataCreate.password;
-            delete dataCreate.secrets;
+            delete dataCreate._doc.password;
+            delete dataCreate._doc.secrets;
+
             return res.send(dataCreate);
 
         } catch(err) {
