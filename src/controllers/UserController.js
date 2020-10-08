@@ -39,7 +39,7 @@ module.exports = {
             if (await schema.findOne({ email, managerId }))
                 return res.status(400).send({ error: 'User already exists'});
 
-            const dataCreate = await Mongo.create(res, schema, body);
+            const dataCreate = await Mongo.create(res, schema, body).lean();
             const { _id } = dataCreate;
             // Se o usuário que está sendo cadastrado for um manager, o 'managerId' é o seu próprio ID
             if (registerLevel == 'manager') {
