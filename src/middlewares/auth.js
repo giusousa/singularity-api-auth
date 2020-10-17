@@ -4,9 +4,34 @@ require('dotenv').config();
 
 module.exports = async (req, res, next) => {
 
+    // PERMITE QUE DETERMINADOS ENDEREÇOS DA WEB POSSAM ACESSAR SEM AUTENTICAÇÃO
+    // LISTA DE APIS PERMITIDAS
+    const apis = [
+        { 
+            url: '',
+            userId: '5ee2a87fc9aef4256c31b827',
+            managerId: 'admin',
+            level: 'supermanager',
+            project: 'easychat',
+            stores: [],
+        },
+    ]
+
+    const requestedUrl = req.get('origin');
+    
+    const api = apis.find(({url}) => url === requestedUrl)
+
+    console.log(requestedUrl)
+    console.log(api)
+
+    if (api) {
+        req = { ...req, ...api}
+        return next()
+    };
+
+
     const auth_cookie = req.cookies.auth_token
     let token = auth_cookie ? auth_cookie : ''
-
 
     if (!auth_cookie) {
 
