@@ -16,9 +16,12 @@ const corsOptions = {
         'https://easychat-backend-cn4eogsveq-uc.a.run.app'
     ];
 
+
+    console.log('origin')
     console.log(origin)
 
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
+
+    if (whitelist.indexOf(origin) !== -1 || (!origin &&  process.env.NODE_ENV === 'DEV')) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
