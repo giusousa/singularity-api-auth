@@ -17,11 +17,11 @@ module.exports = async (req, res, next) => {
         },
     ]
 
-    const requestedUrl = req.get('origin');
+    const requestedUrl = req
     
     const api = apis.find(({url}) => url === requestedUrl)
 
-    console.log(requestedUrl)
+    //console.log(requestedUrl)
     console.log(api)
 
     if (api) {
