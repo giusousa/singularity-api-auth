@@ -12,7 +12,8 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const whitelist = [
-        'https://boimanso-frontend-7scc3zwlma-uc.a.run.app'
+        'https://boimanso-frontend-7scc3zwlma-uc.a.run.app',
+        'https://easychat-backend-cn4eogsveq-uc.a.run.app'
     ];
 
     console.log(origin)
