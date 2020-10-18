@@ -37,6 +37,10 @@ app.use( function (req, res, next) {
     console.log('================')
     console.log(req.get('host'))
     console.log(req.get('origin'))
+    console.log('================')
+    console.log(req.header('Host'))
+    console.log(req.header('Origin'))
+
 
 
 
