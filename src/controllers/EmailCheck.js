@@ -14,13 +14,13 @@ module.exports = async (req, res) => {
     console.log(data)
 
 
-    const managersUser = await data.reduce(async (acc, { managerId }) => {
+    const managersUser = await data.reduce(async (acc = [], { managerId }) => {
         const  [{name, managerName}] = await Mongo.index(res, schema, { managerId }, 'name managerName');
         console.log(name)
         console.log(managerName)
         console.log([...acc, {managerId, managerName: managerName || name}])
         return [...acc, {managerId, managerName: managerName || name}]
-    }, [])
+    })
 
     res.send(managersUser);
 
