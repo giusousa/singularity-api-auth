@@ -34,10 +34,11 @@ module.exports = {
                     : project;
 
         body.managerId = managerId;
-
+        const emailParse = String(body.email).toLowerCase().trim()
+        body.email = emailParse
         try {
 
-            const query = { email, project, managerId };
+            const query = { email: emailParse, project, managerId };
             if (registerLevel === 'manager') 
                 delete query.managerId
             if (registerLevel === 'supermanager' || registerLevel === 'admin')
