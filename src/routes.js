@@ -48,7 +48,6 @@ const routes  = express.Router();
 		})
 	}), ResetPassword.create); 
 
-
 	// AUTENTICAÇÃO
 	routes.post('/auth/*', celebrate({
 		[Segments.BODY]: 	Joi.object().keys({
@@ -57,7 +56,6 @@ const routes  = express.Router();
 			managerId: 		Joi.string(),
 		})
 	}), AuthController.create); 
-
 
 	// ====================================================
 	// ====================================================

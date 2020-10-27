@@ -36,7 +36,14 @@ module.exports = {
         body.managerId = managerId;
 
         try {
-            if (await schema.findOne({ email, managerId }))
+
+            const query = { email, project, managerId };
+            if (registerLevel === 'manager') 
+                delete query.managerId
+            if (registerLevel === 'supermanager' || registerLevel === 'admin')
+                delete query.project
+
+            if (await schema.findOne(query))
                 return res.status(400).send({ error: 'User already exists'});
 
             const dataCreate = await Mongo.create(res, schema, body);
