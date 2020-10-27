@@ -66,7 +66,6 @@ const routes  = express.Router();
 	// 'authMiddleware' Verifica se o usuário possui um token válido.
 	// 'permissionMiddleware' Verifica se o usuário possui autorização para fazer o que quer. 
 
-
 	// CHECK AUTENTICAÇÃO
 	routes.get('/auth/*', authMiddleware, AuthController.index); 
 
@@ -80,6 +79,7 @@ const routes  = express.Router();
 
 			name:           Joi.string().required(),
 			managerId:		Joi.string(),
+			managerName:	Joi.string(),
 			cpfCnpj:        Joi.string(),
 			birth:          Joi.string(),
 	
@@ -113,6 +113,7 @@ const routes  = express.Router();
 
 		[Segments.QUERY]: 	Joi.object().keys({
 			page: 			Joi.number(),
+			managerName:	Joi.string(),
 			cpfCnpj:		Joi.string(),
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
@@ -134,6 +135,8 @@ const routes  = express.Router();
 			name:           Joi.string(),
 			cpfCnpj:        Joi.string(),
 			birth:          Joi.string(),
+
+			managerName: 	Joi.string(),
 	
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
@@ -166,7 +169,6 @@ const routes  = express.Router();
 		}),
 		
 	}), permissionMiddleware, UserController.delete); 
-
 
 	// CADASTRO DE LOJAS, EDIÇÃO E DELEÇÃO
 	routes.post('/store/*', authMiddleware, celebrate({
@@ -238,5 +240,4 @@ const routes  = express.Router();
 		})
 	}), permissionMiddleware, StoreController.delete); 
 
- 
 module.exports = routes;        // Permite a exportação da váriavel 'routes'.

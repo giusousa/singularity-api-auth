@@ -61,6 +61,10 @@ let schema = new mongoose.Schema({
         type: 'String',
     },
 
+    managerName: {
+        type: 'String',
+    },
+
     creatorId: {
         type: 'String',
     },

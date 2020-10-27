@@ -11,7 +11,7 @@ module.exports = {
         const emailParse = String(email).toLowerCase().trim()
         
         // Verifica se o usuário existe no banco de dados
-        const result = await schema.findOne({ email: emailParse, managerId }).select('name email password level project stores managerId attributes');
+        const result = await schema.findOne({ email: emailParse, managerId }).select('name email password level project stores managerId managerName attributes');
 
         // Caso o usuário não exista, enviar aviso de erro
         if (!result) 

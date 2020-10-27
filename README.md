@@ -189,6 +189,7 @@ queryMask:
 createAndUpdateMask:
 >            name            (string)                       Required
 >            managerId       (string)                       Required from level (admin) and (supermanager) (1) (2)
+>            managerName     (string)                       Optional
 >            cpfCnpj         (string)                       Optional
 >            birth           (string)                       Optional
 >            telephone1      (string) Min 10 Máx 11         Optional
@@ -207,6 +208,7 @@ createAndUpdateMask:
 >            level           (string)                       Required (3)
 >            stores          (array)                        Optional (3)  
 >            secrets         (array)                        Optional (4) 
+>            
 >            attributes      (object)                       Optional
 >
 
@@ -217,8 +219,11 @@ createAndUpdateMask:
 > (3) - Campos não podem ser alterados pelo próprio user, apenas por alguém de level superior.
 > (4) - O campo secrets é utilizado para armazenar chaves secretas. Por este motivo, esta chave não é retornada
 > quando você receber informações de um usuário. Apenas superusuários podem criar e editar.
+> (5) - 'managerName' tem a função de "dar um nome para o grupo de usuários" pertencentes ao mesmo 'managerId'.
+> Se não for informado, este campo será setado automáticamente com o nome do usuário 'manager' dono daquele grupo.
 
 queryMask:
+>           managerName     (string) 
 >           cpfCnpj         (string)                        
 >           telephone1      (string) Min 10 Máx 11          
 >           telephone2      (string) Min 10 Máx 11          

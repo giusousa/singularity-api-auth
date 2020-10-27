@@ -39,6 +39,10 @@ module.exports = {
         
         try {
 
+            /** Verifica se aquele e-mail já possui cadastro */
+            /** 'admin' e 'supermanager' precisam ter e-mail únicos no sistema */
+            /** 'manager' por ter um mesmo e-mail cadastrado em vários projetos */
+            /** 'superuser', 'user' e 'client' podem ter o mesmo e-mail cadastrado em vários grupos do mesmo projeto */
             const query = { email: emailParse, project, managerId };
             if (registerLevel === 'manager') 
                 delete query.managerId
@@ -47,6 +51,11 @@ module.exports = {
 
             if (await schema.findOne(query))
                 return res.status(400).send({ error: 'User already exists'});
+
+            /** Caso o usuário seja um 'manager', ele deve informar um nome para sua organização */
+            /** Se não informado, este campo será salvo automáticamente com o nome dele */
+            if (registerLevel === 'manager' && !body.managerName)
+                body.managerName = body.name;
 
             const dataCreate = await Mongo.create(res, schema, body);
             const { _id } = dataCreate;
