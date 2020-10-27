@@ -5,9 +5,12 @@ const projectConfig = require('./config/project.json')
 
 const UserController = require('./controllers/UserController');
 const StoreController = require('./controllers/StoreController');
+
 const AuthController = require('./controllers/AuthController');
 const ForgotPassword = require('./controllers/ForgotPassword');
 const ResetPassword = require('./controllers/ResetPassword');
+
+const EmailCheck	= require('./controllers/EmailCheck');
 
 const authMiddleware = require('./middlewares/auth');
 const permissionMiddleware = require('./middlewares/permission');
@@ -21,6 +24,13 @@ const routes  = express.Router();
 	// ROTAS ABERTAS
 	// ====================================================
 	// ====================================================
+
+	// CONSULTA DE E-MAIL
+	routes.post('/email_check/*', celebrate({
+		[Segments.BODY]: 	Joi.object().keys({
+			email: 			Joi.string().required().email(),
+		})
+	}), EmailCheck)
 
 	// RECUPERAÇÃO DE SENHA
 	routes.post('/forgot_password/*', celebrate({	

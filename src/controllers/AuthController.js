@@ -2,7 +2,6 @@ const schema = require('../mongo/user');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/generateToken')
 
-
 module.exports = {
 
     async create(req, res) {

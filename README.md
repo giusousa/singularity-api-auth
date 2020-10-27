@@ -108,6 +108,23 @@ BODY    :   email           (string)   Obrigatório para (todos)
             password        (string)   Obrigatório para (todos)  Min 6 Máx 20
 
 
+=====================================================================================================
+=====================================================================================================
+=====================================================================================================
+EMAIL CHECK
+=====================================================================================================
+=====================================================================================================
+=====================================================================================================
+
+6. Intenção:
+    Faz uma pesquisa e retorna os grupos que aquele determinado email faz parte
+
+auth    : Não requer autenticação
+Método  : post
+URL     : /email_check/<project>    (Se você for admin, usar 'auth' como nome de projeto)
+BODY    : email           (string)   Obrigatório para (todos)
+
+OBS: Não retorna informações caso o email seja 'admin' || 'supermanager'
 
 =====================================================================================================
 =====================================================================================================
@@ -221,6 +238,9 @@ createAndUpdateMask:
 > quando você receber informações de um usuário. Apenas superusuários podem criar e editar.
 > (5) - 'managerName' tem a função de "dar um nome para o grupo de usuários" pertencentes ao mesmo 'managerId'.
 > Se não for informado, este campo será setado automáticamente com o nome do usuário 'manager' dono daquele grupo.
+> Em teoria este campo só tem utilidade de preenchimento caso o usuário que estiver sendo cadastrado seja um 
+> 'manager', pois isso permitirá a execução da função 'email_check' que pesquisa e retorna os nomes dos grupos
+> que determinado email faz parte. 
 
 queryMask:
 >           managerName     (string) 
