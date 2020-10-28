@@ -88,11 +88,16 @@ module.exports = async (req, res, next) => {
         
         // Caso seja um usuário querendo carregar uma loja
         if (method == 'GET') {
+
+            if (!stores || stores.length === 0)
+                return res.send([])
+
             // O usuário deverá ter lojas cadastradas para poder listar
-            if (level !== 'manager' && stores.length > 0) {
+            if (level !== 'manager') {
                 req.query.$or  = [];
                 stores.map(_id =>  req.query.$or.push({_id}) )
             };
+            
             return next()
         }
             
