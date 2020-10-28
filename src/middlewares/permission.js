@@ -21,7 +21,6 @@ module.exports = async (req, res, next) => {
     // Caso a rota seja a de usuários
     if (url === '/user/*') {
 
-
         if (method == 'POST') {
             // Bloqueia usuários que estejam tentando Criar usuários de um alguém do nível superior 
             if (!Boolean(acess.control.find( a => { return a == req.body.level})))
@@ -80,24 +79,26 @@ module.exports = async (req, res, next) => {
     // ROTA PARA EDIÇÃO DE LOJAS
     if (url === '/store/*') {
 
-        // Um usuário manager só pode deletar lojas que pertençam a ele mesmo
+        // Um usuário manager só pode criar lojas que pertençam a ele mesmo
         if (level == 'manager' && method == 'POST')
             req.body.managerId = userId;
+
+        // Se não for um superusuário, será possivel editar/listar/deletar apenas lojas com o mesmo managerId
         if (level == 'manager' && (method == 'PUT' || method == 'GET' || method == 'DELETE'))
             req.query.managerId = userId
         
         // Caso seja um usuário querendo carregar uma loja
         if (method == 'GET') {
 
-            if (!stores || stores.length === 0)
-                return res.send([])
-
             // O usuário deverá ter lojas cadastradas para poder listar
-            if (level !== 'manager') {
+            if (level === 'superuser' || level === 'user' || level === 'client'){
+                if (!stores || stores.length === 0)
+                    return res.send([])
                 req.query.$or  = [];
-                stores.map(_id =>  req.query.$or.push({_id}) )
-            };
-            
+                stores.map(_id =>  req.query.$or.push({_id}))
+                req.query.managerId = managerId;
+            }
+
             return next()
         }
             
