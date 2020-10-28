@@ -81,6 +81,9 @@ module.exports = {
     async index(req, res) {
 
         const { project, level, managerId, stores, query } = req;
+        
+        console.log(stores)
+        
         // (supermanager) pode acessar usuário de todos os níveis do seu projeto
         if (level == 'supermanager') {
             query.project = project
