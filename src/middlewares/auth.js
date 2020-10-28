@@ -5,7 +5,7 @@ require('dotenv').config();
 module.exports = async (req, res, next) => {
 
     const auth_cookie = req.cookies.auth_token
-    const authHeader  = req.headers.authorization;
+    const authHeader  = req.headers.Authorization;
 
     if (!auth_cookie && !authHeader) 
         return res.status(401).send ({ error: 'No token provided' })
