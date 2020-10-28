@@ -99,8 +99,9 @@ module.exports = {
 
         // 'superuser' e 'user' podem listar apenas usuários de suas lojas
         if (level == 'superuser' || level == 'user') {
+            // 'Erro. 0 stores registers in user'
             if (stores.length === 0)
-                return res.status(400).send({ error: 'Erro. 0 stores registers in user'});
+                return res.send([]);
             // Caso o usuário faça parte de pelo menos 1 loja
             // Buscar usuários que façam parte de uma de suas lojas
             query.$or  = [];
