@@ -5,16 +5,15 @@ require('dotenv').config();
 module.exports = async (req, res, next) => {
 
     const auth_cookie = req.cookies.auth_token
-    let token = auth_cookie ? auth_cookie : ''
+    const authHeader  = req.headers.authorization;
 
+    if (!auth_cookie && !authHeader) 
+        return res.status(401).send ({ error: 'No token provided' })
 
-    if (!auth_cookie) {
+    let token = auth_cookie || authHeader;
 
-        const authHeader = req.headers.authorization;
+    if (authHeader) {
 
-        if(!authHeader) 
-            return res.status(401).send ({ error: 'No token provided' })
-    
         const parts = authHeader.split(' ');
 
         if (!parts.length === 2)  
@@ -32,7 +31,7 @@ module.exports = async (req, res, next) => {
 
     }
     
-    
+
     jwt.verify(token, authConfig.secret, (err, decoded ) => {
 
         if (err) 
