@@ -89,6 +89,8 @@ module.exports = async (req, res, next) => {
         
         // Caso seja um usuário querendo carregar uma loja
         if (method == 'GET') {
+            if (level === 'supermanager')
+                req.query.project = project;
 
             // O usuário deverá ter lojas cadastradas para poder listar
             if (level === 'superuser' || level === 'user' || level === 'client'){
