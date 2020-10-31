@@ -179,13 +179,14 @@ createAndUpdateMask:
 >           city            (string)                        Optional
 >           uf              (string)                        Optional
 >           cep             (string)                        Optional
+>           type            (string)                        Optional (2) (3)
 >           
 >
 > (1) - // ID do user que será próprietário da store. Necessário apenas caso você seja um 'supermanager',
 > pois caso você seja um 'manager', esse valor será setado automáticamente.
 > (2) - // Não é possível alterar este campo após a criação da loja, por isso, esse campo não é reconhecido
 > se você solicitar atualização do arquivo. (method PUT)
->
+> (3) - // Este campo pode ser utilizado para dividir as lojas por ramo/tipo.
 
 queryMask:
 >           cpfCnpj         (string)   
@@ -193,6 +194,7 @@ queryMask:
 >           telephone1      (string) Min 10 Máx 11          
 >           telephone2      (string) Min 10 Máx 11          
 >           whatsapp        (string) Min 10 Máx 11
+>           type            (string)
      
 > Obs1. Usuário 'manager' podem acessar as lojas com mesmo 'managerId' que o seu.
 > Obs2. Outros usuários podem acessar as lojas que constam nos seus cadastros.
@@ -259,3 +261,25 @@ queryMask:
 >   Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
 >   Obs4. Caso o usuário a ser criado/manipulado seja do level 'admin' usar 'auth' como nome do projeto
 >   Obs5.     QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', 'manager',informe 'admin' na QUERY. Para os outros tipos de usuário, >>   informe o managerId padrão da organização que você está manipulando.
+
+
+## PROCEDIMENTOS
+
+### CRIAR NOVA PROPRIEDADE PARA UM SCHEMA MONGO
+
+>> Em './README.md', atualize a documentação realizando as devidas adições/alterações e observações
+>>  1. adicione a propriedade no objecto do 'createAndUpdateMask' do schema que esta sendo editado
+>>  2. (opcional) - Caso o campo esteja disponível para pesquisa, adicione-o também em 'queryMask'
+>>
+>> Em './src/routes' Acesse o conjunto de rotas do schema e adicione a nova propriedade em 'POST' E 'PUT'
+>>  1. (Opcional) - Se a propriedade estiver disponível para pesquisa, adicione-a também em 'GET'
+>>
+>> Em './src/mongo' Busque o schema e adicione a nova propriedade.
+>>
+>> OBS: Caso a propriedade só possa ser criada/editada sob determindas condições, precise de 
+>>      Preenchimento aut/Edição antes de salvar ou coisas do tipo, realize tais alterações
+>>      em './src/controllers' seguindo o modelo. Não esqueça de anotar as observações/restrições
+>>      na documentação da Api
+>>
+>> Teste a rota
+>> Realize as alterações necessárias no JTEST

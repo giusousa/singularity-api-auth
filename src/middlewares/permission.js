@@ -104,14 +104,13 @@ module.exports = async (req, res, next) => {
             
         // Caso seja um 'supermanager' querendo criar uma loja
         if (level === 'supermanager' && method == 'POST' && !req.body.managerId)
-            return res.status(400).send({error: 'QUERY "managerId". Camp incorret'});
+            return res.status(400).send({error: 'QUERY "managerId". Camp incorret | Required from level (supermanager)'});
 
         // CASO O USUÁRIO SEJA 'supermanager' ou manager
         if (level === 'supermanager' || level == 'manager')
             return next()
         
         return res.status(400).send({ error: 'You are not authorized to edit store'});
-
     }
 
 };

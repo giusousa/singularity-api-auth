@@ -30,6 +30,9 @@ let schema = new mongoose.Schema({
     managerId: {
         type: 'String',
     },
+    type: {
+        type: 'String'
+    },
 });
 
 

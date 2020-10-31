@@ -203,6 +203,7 @@ const routes  = express.Router();
 			cep:            Joi.string().min(8).max(9),
 				
 			attributes:		Joi.object().required(),
+			type:			Joi.string(),
 		})
 
 
@@ -216,7 +217,7 @@ const routes  = express.Router();
 			telephone1:     Joi.string().min(10).max(13),
 			telephone2:     Joi.string().min(10).max(13),
 			whatsapp:       Joi.string().min(10).max(13),
-
+			type:			Joi.string(),
 		})
 	}), permissionMiddleware, StoreController.index);
 
@@ -240,7 +241,6 @@ const routes  = express.Router();
 			uf:             Joi.string().length(2),
 			cep:            Joi.string().min(8).max(9),
 			attributes: 	Joi.object(),
-
 		})
 	}), permissionMiddleware, StoreController.edit); 
 
