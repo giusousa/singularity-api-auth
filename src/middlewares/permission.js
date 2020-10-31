@@ -86,7 +86,7 @@ module.exports = async (req, res, next) => {
         // Se não for um superusuário, será possivel editar/listar/deletar apenas lojas com o mesmo managerId
         if (level == 'manager' && (method == 'PUT' || method == 'GET' || method == 'DELETE'))
             req.query.managerId = userId
-        
+
         // Caso seja um usuário querendo carregar uma loja
         if (method == 'GET') {
             if (level === 'supermanager')

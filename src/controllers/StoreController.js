@@ -11,6 +11,9 @@ function formateBody (body) {
 module.exports = {
 
     async create(req, res) {
+        const { project } = req;
+        req.body.project = project;
+        
         return res.send(await Mongo.create(res, schema, req.body));
     },
     async index(req, res) {

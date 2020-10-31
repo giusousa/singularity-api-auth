@@ -180,7 +180,8 @@ createAndUpdateMask:
 >           uf              (string)                        Optional
 >           cep             (string)                        Optional
 >           type            (string)                        Optional (2) (3)
->           modules         (array)                         Optional (4)  
+>           modules         (array)                         Optional (4)
+>           project         (string)                        -------- (5) 
 >           
 >
 > (1) - // ID do user que será próprietário da store. Necessário apenas caso você seja um 'supermanager',
@@ -189,6 +190,7 @@ createAndUpdateMask:
 > se você solicitar atualização do arquivo. (method PUT)
 > (3) - // Este campo pode ser utilizado para dividir as lojas por ramo/tipo.
 > (4) - // Este campo pode ser utilizado para armazenar os modulos que a Loja pode acessar no site/app
+> (5) - // Setado automaticamente. Não pode ser editado
 
 queryMask:
 >           cpfCnpj         (string)   

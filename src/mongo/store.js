@@ -35,7 +35,10 @@ let schema = new mongoose.Schema({
     },
     modules: {
         type: 'Object'
-    }
+    },
+    project: {
+        type: 'String'
+    },
 });
 
 
