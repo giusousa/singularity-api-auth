@@ -33,6 +33,9 @@ let schema = new mongoose.Schema({
     type: {
         type: 'String'
     },
+    modules: {
+        type: 'Object'
+    }
 });
 
 

@@ -23,7 +23,7 @@ REGRA 3 - Usuários 'supermanager' podem gerenciar todos os usuários e stores d
 
 REGRA 4 - Usuários 'supermanager' são os únicos que podem criar e deletar 'stores' 
 
-REGRA 5 - Não é possível editar o managerId de uma store
+REGRA 5 - Não é possível editar o (managerId || type) de uma store
 
 REGRA 6 - Nas rotas onde a QUERY 'managerId' é obrigatória.
     // 'admin' e 'supermanager' devem informar o valor 'admin'
@@ -180,6 +180,7 @@ createAndUpdateMask:
 >           uf              (string)                        Optional
 >           cep             (string)                        Optional
 >           type            (string)                        Optional (2) (3)
+>           modules         (array)                         Optional (4)  
 >           
 >
 > (1) - // ID do user que será próprietário da store. Necessário apenas caso você seja um 'supermanager',
@@ -187,6 +188,7 @@ createAndUpdateMask:
 > (2) - // Não é possível alterar este campo após a criação da loja, por isso, esse campo não é reconhecido
 > se você solicitar atualização do arquivo. (method PUT)
 > (3) - // Este campo pode ser utilizado para dividir as lojas por ramo/tipo.
+> (4) - // Este campo pode ser utilizado para armazenar os modulos que a Loja pode acessar no site/app
 
 queryMask:
 >           cpfCnpj         (string)   

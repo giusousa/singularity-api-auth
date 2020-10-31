@@ -204,6 +204,7 @@ const routes  = express.Router();
 				
 			attributes:		Joi.object().required(),
 			type:			Joi.string(),
+			modules:		Joi.array(),
 		})
 
 
@@ -241,6 +242,8 @@ const routes  = express.Router();
 			uf:             Joi.string().length(2),
 			cep:            Joi.string().min(8).max(9),
 			attributes: 	Joi.object(),
+
+			modules:		Joi.array(),
 		})
 	}), permissionMiddleware, StoreController.edit); 
 
