@@ -1,10 +1,16 @@
 const schema = require('../mongo/user');
 const crypto = require('crypto');
 const mailer = require('../services/mailer');
+const fs = require('fs');
+const handlebars = require('handlebars');
+
 
 module.exports = {
 
     async create(req, res) {
+
+        const html = fs.readFileSync('./src/utils/mail/auth/forgotPassword.html', {encoding:'utf-8'});
+        const htmlCompile = handlebars.compile(html);
 
         const { managerId } = req.query;
         const { email } = req.body;
@@ -30,15 +36,16 @@ module.exports = {
                 }
             });
 
+            const replacements = { token };
+            const template = htmlCompile(replacements);
 
             await mailer.sendMail({
                 to: email,
                 from: "atendimento@nerastreamento.com",
-                //subject: "Hello",
+                subject: "Recuperação de Senha",
                 //text: "Hello world?", // plain text body
-                // html: "<b>Hello world?</b>", // html body
-                html: 'auth/forgotPassword',
-                context: { token },
+                //html: "<b>Hello world?</b>", // html body
+                html: template,
             }, (err) => {
                 if (err) {
                     return res.status(400).send({ error: 'Cannot send forgot password email'}); 
@@ -47,12 +54,8 @@ module.exports = {
                 } 
             });
 
-        
         } catch (err) {
-
             res.status(400).send({ error: 'Error on forgot password, try again' });
         }
-
     },
-
 };
