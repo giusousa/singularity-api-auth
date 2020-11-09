@@ -1,6 +1,13 @@
-DOCUMENTAÇÃO DA API
+# API AUTH
 
-USUÁRIOS - Regras
+> A API AUTH SERVE COMO UM HUB DE FUNÇÕES E POLITICA DE PRIVACIDADE PADRÃO QUE PODE SER 
+> UTILIZADO POR PROJETOS EXTERNOS. ENTRE AS FUNÇÕES OFERECIDAS ESTÃO CRUD DE USUÁRIOS,
+> CONTROLE DE LOGIN E MANIPULAÇÃO POR LEVEL, RECUPERAÇÃO E SENHA, CADASTRO DE LOJAS E
+> MUITO MAIS.
+
+# DOCUMENTAÇÃO DA API
+
+# USUÁRIOS - Regras
 
     admin           - controle sobre todos os usuários 'supermanager'
     supermanager    - controle sobre stores e users do seu projeto
@@ -266,6 +273,112 @@ queryMask:
 >   Obs4. Caso o usuário a ser criado/manipulado seja do level 'admin' usar 'auth' como nome do projeto
 >   Obs5.     QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', 'manager',informe 'admin' na QUERY. Para os outros tipos de usuário, >>   informe o managerId padrão da organização que você está manipulando.
 
+## CONTACT
+>
+>ROUTE:      CONTACT     
+>URL:        /contact <br/>
+>METHODS:    POST | GET | PUT | DELETE
+>DETAIL:     Este objecto pode ser utilizado para gerenciar CONTATOS entre usuários | lojas cadastradas.
+
+createAndUpdateMask:
+>            managerId              (string)        -------- (1) (No edit)    
+>            managerName            (string)        -------- (1) (No edit)    
+>            userId                 (string)        -------- (1) (No edit)    
+>            userName               (string)        Required (8) (No edit)    
+>            storeId                (string)        Optional (2) (No edit)    
+>            storeName              (string)        -------- (7) (No edit)    
+>            group [{               (array)         Required (3) (9)
+>                userId             (string)        Required
+>                userName           (string)        Required
+>            }]  
+>            status                 (boolean)       Required (4)
+>            score                  (number)        Optional (5)    
+>            type                   (string)        Optional
+>            title                  (string)        Optional
+>            project                (string)        Optional (6) (No edit) 
+>            attributes             (object)        Optional 
+>
+queryMask:
+>
+>            _id                    (string)
+>            managerId              (string)
+>            storeId                (string)
+>            userId                 (string)
+>            group                  (string)
+>            status                 (boolean)
+>            score                  (number)
+>            type                   (string)
+>            title                  (string)
+
+> (1) - Setado aut. | Refere-se informações do criador deste objeto
+> (2) - Este campo é opcional, caso seja preenchido, os membros tipo 'manager', 'superuser' e 'user'
+>       com acesso a loja em questão também terão acesso aos dados deste objeto.
+> (3) - Usuários que tem acesso aos dados deste objeto.
+> (4) - Caso seja setado como falso, pode considerar-se que aquele objeto é obsoleto|excluido|arquivado
+> (5) - Pode ser utilizado em casos que este objeto é um 'atendimento ao cliente' que pode requerer
+>       que o solicitante dê uma nota ao atendimento ao final.
+> (6) - Os administradores do projeto também podem ter acesso as informações de 'CONTACT' se este campo for
+>       informado.
+> (7) - Setado aut se for informado um Id de uma loja válida.
+> (8) - O solicitante pode informar o seu nome.
+> (9) - Caso o usuário esteja lojado, sua conta será automáticamente inclusa na prop 'group'
+
+policy:
+
+>   POST - Live (1)
+>   GET | PUT | DELETE -  (2) (3) (4)
+
+> (1) - Rota de acesso livre.  (does not require authentication)
+> (2) - Caso o usuário esteja incluso na propriedade 'group' que armazena os usuários que fazem 
+>       parte e tem acesso a aquele grupo.
+> (3) - Caso a propriedade 'storeId' esteja preenchida, os usuários 'manager' e 'superuser' que
+>       possuirem acesso a esta loja também podem manipular o obj.
+> (4) - Caso a propriedade 'project' esteja preenchida, os usuários 'supermanager' com acesso a
+>       aquele projeto podem manipular o obj.
+
+
+## MESSAGE
+
+>
+>ROUTE:      MESSAGE     
+>URL:        /message <br/>
+>METHODS:    POST | GET | DELETE
+>DETAIL:     Este objecto pode ser utilizado para armazenar mensagens de um 'CONTACT'
+
+createAndUpdateMsk:
+>
+>                contactId          (string)    Required (2) (No edit)
+>                userId             (string)    -------- (1) (No edit) 
+>                message            (string)    Required     (No edit)
+
+queryMask
+>
+>               _id                 (string)
+>               userId              (string)  
+>               contactId  [        (array)     Required (3) (4 - Transformar em string antes de enviar)
+>                   'ABC', 'ABC'    (string)
+>               ]
+>
+
+> (1) - Setado aut. | Refere-se informações do criador deste objeto
+> (2) - ID do arquivo em CONTACT detentor do conjunto de mensagens
+> (3) - Contém uma array informando os 'contactId' da solicitação
+
+policy:
+>
+>   POST | GET -     (1) (2) (3)
+>   DELETE - (4)
+>
+> (1) - Caso o usuário esteja incluso na propriedade 'group' que armazena os usuários que fazem 
+>       parte e tem acesso a aquele grupo.
+> (2) - Caso a propriedade 'storeId' esteja preenchida, os usuários 'manager' e 'superuser' que
+>       possuirem acesso a esta loja também podem manipular o obj.
+> (3) - Caso a propriedade 'project' esteja preenchida, os usuários 'supermanager' com acesso a
+>       aquele projeto podem manipular o obj.
+> (4) - Apenas o usuário que criou o obj pode apagá-lo
+
+
+## PRODUCT
 
 ## PROCEDIMENTOS
 

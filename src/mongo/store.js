@@ -39,7 +39,7 @@ let schema = new mongoose.Schema({
     project: {
         type: 'String'
     },
-});
+}, { timestamps: true });
 
 
 let model = mongoose.model( 'Store', schema)

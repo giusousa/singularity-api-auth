@@ -5,6 +5,8 @@ const projectConfig = require('./config/project.json')
 
 const UserController = require('./controllers/UserController');
 const StoreController = require('./controllers/StoreController');
+const ContactController = require('./controllers/ContactController');
+const MessageController = require('./controllers/MessageController');
 
 const AuthController = require('./controllers/AuthController');
 const ForgotPassword = require('./controllers/ForgotPassword');
@@ -81,6 +83,7 @@ const routes  = express.Router();
 
 	// DELETAR AUTENTICAÇÃO
 	routes.delete('/auth/*', authMiddleware, AuthController.delete); 
+
 
 	// CADASTRO DE USUÁRIOS
 	routes.post('/user/*', authMiddleware, celebrate({
@@ -180,6 +183,7 @@ const routes  = express.Router();
 		
 	}), permissionMiddleware, UserController.delete); 
 
+
 	// CADASTRO DE LOJAS, EDIÇÃO E DELEÇÃO
 	routes.post('/store/*', authMiddleware, celebrate({
 
@@ -249,8 +253,83 @@ const routes  = express.Router();
 
 	routes.delete('/store/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
-			_id:  Joi.string().required()
+			_id:  Joi.string().required(),
 		})
 	}), permissionMiddleware, StoreController.delete); 
+
+
+	// CADASTRO DE CONTATOS, EDIÇÃO E DELEÇÃO
+	routes.post('/contact/*', celebrate({
+
+		[Segments.BODY]: Joi.object().keys({
+			project:			Joi.string(),
+			storeId:			Joi.string(),
+			userName:			Joi.string().required(),
+			group:				Joi.array().required(),
+			status:				Joi.boolean().required(),
+			score:				Joi.number(),
+			type:				Joi.string(),
+			title:				Joi.string(),
+			attributes:			Joi.object(),
+		})
+
+	}), ContactController.create); 
+
+	routes.get('/contact/*', authMiddleware, celebrate({
+		[Segments.QUERY]: Joi.object().keys({
+			page: 			Joi.number(),
+			_id:			Joi.string(),
+			managerId:		Joi.string(),
+			storeId:		Joi.string(),
+			userId:			Joi.string(),
+			status:			Joi.boolean(),
+			score:			Joi.number(),
+			type:			Joi.string(),
+			title:			Joi.string(),
+		})
+	}), ContactController.index);
+
+	routes.put('/contact/*', authMiddleware, celebrate({
+
+		[Segments.BODY]: Joi.object().keys({
+			_id:				Joi.string().required(),
+			group:				Joi.array(),
+			status:				Joi.boolean(),
+			score:				Joi.number(),
+			type:				Joi.string(),
+			title:				Joi.string(),
+			attributes:			Joi.object(),
+		})
+	}), ContactController.edit); 
+
+	routes.delete('/contact/*', authMiddleware, celebrate({
+		[Segments.QUERY]: Joi.object().keys({
+			_id:  Joi.string().required()
+		})
+	}), ContactController.delete); 
+
+	// MENSAGENS
+	routes.post('/message/*', authMiddleware, celebrate({
+		[Segments.BODY]: Joi.object().keys({
+			message: 		Joi.string(),
+			contactId:		Joi.string(),
+		})
+	}), MessageController.create); 
+
+	routes.get('/message/*', authMiddleware, celebrate({
+		[Segments.QUERY]: Joi.object().keys({
+			page: 			Joi.number(),
+			_id:			Joi.string(),
+			userId:			Joi.string(),
+			contactId:		Joi.string().required(),
+		})
+	}), MessageController.index);
+
+	routes.delete('/message/*', authMiddleware, celebrate({
+		[Segments.QUERY]: Joi.object().keys({
+			_id:  Joi.string().required()
+		})
+	}), MessageController.delete); 
+
 
 module.exports = routes;        // Permite a exportação da váriavel 'routes'.
