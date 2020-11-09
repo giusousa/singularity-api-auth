@@ -355,7 +355,7 @@ queryMask
 >
 >               _id                 (string)
 >               userId              (string)  
->               contactId  [        (array)     Required (3) (4 - Transformar em string antes de enviar)
+>               contactId  [        (array - string)    Required (3) (4 - Transformar em string antes de enviar)
 >                   'ABC', 'ABC'    (string)
 >               ]
 >
