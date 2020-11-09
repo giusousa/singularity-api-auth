@@ -287,11 +287,11 @@ createAndUpdateMask:
 >            userName               (string)        Required (8) (No edit)    
 >            storeId                (string)        Optional (2) (No edit)    
 >            storeName              (string)        -------- (7) (No edit)    
->            group [{               (array)         Required (3) (9)
+>            group [{               (array)         Optional (3) (9)
 >                userId             (string)        Required
 >                userName           (string)        Required
 >            }]  
->            status                 (boolean)       Required (4)
+>            status                 (boolean)       Optional (4)
 >            score                  (number)        Optional (5)    
 >            type                   (string)        Optional
 >            title                  (string)        Optional
@@ -314,14 +314,16 @@ queryMask:
 > (2) - Este campo é opcional, caso seja preenchido, os membros tipo 'manager', 'superuser' e 'user'
 >       com acesso a loja em questão também terão acesso aos dados deste objeto.
 > (3) - Usuários que tem acesso aos dados deste objeto.
-> (4) - Caso seja setado como falso, pode considerar-se que aquele objeto é obsoleto|excluido|arquivado
+> (4) - Caso não seja informado, será setado automaticamente como 'true'. Caso seja setado como falso, pode 
+>       considerar-se que aquele objeto é obsoleto|excluido|arquivado
 > (5) - Pode ser utilizado em casos que este objeto é um 'atendimento ao cliente' que pode requerer
 >       que o solicitante dê uma nota ao atendimento ao final.
 > (6) - Os administradores do projeto também podem ter acesso as informações de 'CONTACT' se este campo for
 >       informado.
 > (7) - Setado aut se for informado um Id de uma loja válida.
 > (8) - O solicitante pode informar o seu nome.
-> (9) - Caso o usuário esteja lojado, sua conta será automáticamente inclusa na prop 'group'
+> (9) - Caso não seja enviado, será setado aut. como array vazia. Caso o usuário esteja logado, sua conta será 
+>       automáticamente inclusa na prop 'group'.
 
 policy:
 

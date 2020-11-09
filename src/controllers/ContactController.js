@@ -46,8 +46,13 @@ module.exports = {
             ? req.body.userId = userId 
             : delete req.body.userId
         
-        // Inclui a pessoa entre os membros do grupo
-        req.body.group.push({userId: userId || null, userName: req.body.userName})
+        if (!req.body.group)
+            req.body.group = [];
+
+        if (!req.body.group.find(({userId}) => userId === user._id) && req.userId)
+            // Inclui a pessoa entre os membros do grupo
+            req.body.group.push({userId: userId || null, userName: req.body.userName})
+
 
         // Caso o usuário tenha informado uma loja
         if (storeId) {
