@@ -49,8 +49,8 @@ module.exports = {
         const {level, userId, project, stores, query} = req;
         const contactId = JSON.parse(req.query.contactId);
 
-        if (contactId.length === 0)
-            return res.status(400).send({error: `Query contactId required and greater than zero`})
+        if (typeof contactId !== 'array' || contactId.length === 0 )
+            return res.status(400).send({error: `Query contactId required array and greater than zero`})
 
         delete req.query.contactId
 
