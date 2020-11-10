@@ -39,8 +39,11 @@ module.exports = {
     async create(req, res) {
         
         const { userId } = req;
-        const { storeId } = req.body;
+        const { storeId, status } = req.body;
         
+        if (status === undefined)
+            req.body.status = true;
+
         // Caso o usuário esteja logado
         userId 
             ? req.body.userId = userId 
