@@ -40,7 +40,7 @@ module.exports = {
         
         const { userId } = req;
         const { storeId } = req.body;
-
+        
         // Caso o usuário esteja logado
         userId 
             ? req.body.userId = userId 
@@ -52,7 +52,6 @@ module.exports = {
         if (!req.body.group.find(({userId}) => userId === user._id) && req.userId)
             // Inclui a pessoa entre os membros do grupo
             req.body.group.push({userId: userId || null, userName: req.body.userName})
-
 
         // Caso o usuário tenha informado uma loja
         if (storeId) {

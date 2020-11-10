@@ -28,7 +28,7 @@ module.exports = {
                 .limit(10)
                 .select(select)
 
-                res.header('X-Total-Count', count['count(*)']);
+                res.header('X-Total-Count', count);
                 return data;
             } else {
                 const data = await schema.find(newQuery).select(select)

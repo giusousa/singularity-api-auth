@@ -259,7 +259,7 @@ const routes  = express.Router();
 
 
 	// CADASTRO DE CONTATOS, EDIÇÃO E DELEÇÃO
-	routes.post('/contact/*', celebrate({
+	routes.post('/contact/*', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
 			project:			Joi.string(),

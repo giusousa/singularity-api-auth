@@ -357,14 +357,12 @@ queryMask
 >
 >               _id                 (string)
 >               userId              (string)  
->               contactId  [        (array - string)    Required (3) (4 - Transformar em string antes de enviar)
->                   'ABC', 'ABC'    (string)
->               ]
+>               contactId           (string)    Required (3)
 >
 
 > (1) - Setado aut. | Refere-se informações do criador deste objeto
 > (2) - ID do arquivo em CONTACT detentor do conjunto de mensagens
-> (3) - Contém uma array informando os 'contactId' da solicitação
+> (3) - Informando o 'contactId' da solicitação
 
 policy:
 >

@@ -47,35 +47,24 @@ module.exports = {
     },
     async index(req, res) {
         const {level, userId, project, stores, query} = req;
-        const contactId = JSON.parse(req.query.contactId);
 
-        if (typeof contactId !== Array || contactId.length === 0 )
-            return res.status(400).send({error: `Query contactId required array and greater than zero`})
-
-        delete req.query.contactId
-
-        const queryContact = contactId.map(item => ({ _id: item }));
-
-        const contact = await schemaContact.find({$or: queryContact})
-            .select('')
+        const contact = await schemaContact.findById(query.contactId)
+            .select('_id group managerId storeId project')
             .lean()
 
-        await contact.map(({_id, group, managerId, storeId, project: projectItem}) => {
-            const test1 = group.find(({ userId: userIdGroup }) => userIdGroup === userId)
-            const test2 = (level === 'manager' && managerId === userId) || (level === 'superuser' && stores.includes(storeId))
-            const test3 = level === 'supermanager' && projectItem === project
+        if (!contact)
+            return res.status(400).send({error: `'contactId' not found`})
 
-            if (!test1 && !test2 && !test3)
-                return res.status(400).send({error: `Denied access - route: message - contactId ${_id}`})
-        });
+        const test1 = contact.group.find(({ userId: userIdGroup }) => userIdGroup === userId)
+        const test2 = (level === 'manager' && contact.managerId === userId) || (level === 'superuser' && stores.includes(contact.storeId))
+        const test3 = level === 'supermanager' && contact.projectItem === project
 
-        const response = await contactId.reduce(async (acc,item) => {
-            req.query.contactId = item
-            const dataMongo =  await Mongo.index(res, schema, req.query);
-            return [...acc, ...dataMongo];
-        }, []);
-
-        res.send(response);
+        if (!test1 && !test2 && !test3)
+            return res.status(400).send({error: `Denied access - route: message - contactId ${contact._id}`})
+            
+        const reponse = await Mongo.index(res, schema, query)
+        res.send(reponse);
+ 
     },
     async delete(req, res) {
         const document = await schema.findById(req.query._id)
