@@ -48,33 +48,42 @@ module.exports = {
     async index(req, res) {
         const {level, userId, project, stores, query} = req;
 
-        const contact = await schemaContact.findById(query.contactId)
-            .select('_id group managerId storeId project')
-            .lean()
+        try {
 
-        if (!contact)
-            return res.status(400).send({error: `'contactId' not found`})
+            const contact = await schemaContact.findById(query.contactId)
+                .select('_id group managerId storeId project')
+                .lean()
 
-        const test1 = contact.group.find(({ userId: userIdGroup }) => userIdGroup === userId)
-        const test2 = (level === 'manager' && contact.managerId === userId) || (level === 'superuser' && stores.includes(contact.storeId))
-        const test3 = level === 'supermanager' && contact.projectItem === project
+            if (!contact)
+                return res.status(400).send({error: `'contactId' not found`})
 
-        if (!test1 && !test2 && !test3)
-            return res.status(400).send({error: `Denied access - route: message - contactId ${contact._id}`})
-            
+            const test1 = contact.group.find(({ userId: userIdGroup }) => userIdGroup === userId)
+            const test2 = (level === 'manager' && contact.managerId === userId) || (level === 'superuser' && stores.includes(contact.storeId))
+            const test3 = level === 'supermanager' && contact.projectItem === project
+
+            if (!test1 && !test2 && !test3)
+                return res.status(400).send({error: `Denied access - route: message - contactId ${contact._id}`})
+        
+        } catch (err) {
+            return res.status(400).send({ error: 'index database fail - err:' + err })
+        }
+
         const reponse = await Mongo.index(res, schema, query)
         res.send(reponse);
- 
     },
     async delete(req, res) {
-        const document = await schema.findById(req.query._id)
-            .select('userId')
-            .lean()
-        if (!document)
-            return res.status(400).send({error: `_id not found`})
+        try {
+            const document = await schema.findById(req.query._id)
+                .select('userId')
+                .lean()
+            if (!document)
+                return res.status(400).send({error: `_id not found`})
 
-        if (document.userId === req.userId)
-            return Mongo.delete(res, schema, req.query);
+            if (document.userId === req.userId)
+                return Mongo.delete(res, schema, req.query);
+        } catch (err) {
+            return res.status(400).send({ error: 'delete database fail - err:' + err })
+        }
 
         return res.status(400).send({error: `Denied access - route: message | method: ${req.method}`})
     },

@@ -14,22 +14,29 @@ function formateBody (body) {
 async function auth( req, res) {
     const { userId, level, project, stores, body, query, method } = req;
 
-    const contact = await schema.findById(body._id || query._id)
-        .select('group project storeId managerId')
-        .lean()
+    try {
 
-    if (!contact)
-        return res.status(400).send({error: 'document Id not found'})
+        const contact = await schema.findById(body._id || query._id)
+            .select('group project storeId managerId')
+            .lean()
 
-    // O usuário está no grupo de membros participantes deste CONTACT
-    const groupIncludes = contact.group.filter(({userId: userIdItem, userName}) => userIdItem === userId);
-    // O usuário possui acesso a loja || é 'manager' da loja que deste CONTACT 
-    const storeIncludes = contact.storeId && (stores.includes(contact.storeId) || contact.managerId === userId);
-    // O usuário é 'supermanager' do projeto
-    const projectIncludes = contact.project && level === 'supermanager' && project === contact.project;
+        if (!contact)
+            return res.status(400).send({error: 'document Id not found'})
 
-    if (groupIncludes || storeIncludes || projectIncludes) 
-        return true
+        // O usuário está no grupo de membros participantes deste CONTACT
+        const groupIncludes = contact.group.filter(({userId: userIdItem, userName}) => userIdItem === userId);
+        // O usuário possui acesso a loja || é 'manager' da loja que deste CONTACT 
+        const storeIncludes = contact.storeId && (stores.includes(contact.storeId) || contact.managerId === userId);
+        // O usuário é 'supermanager' do projeto
+        const projectIncludes = contact.project && level === 'supermanager' && project === contact.project;
+
+        if (groupIncludes || storeIncludes || projectIncludes) 
+            return true
+
+    } catch (err) {
+        return res.status(400).send({ error: 'index database fail - err:' + err })
+    }
+
 
     return res.status(400).send({error: `Denied access - route: contact | method: ${method}`})   
 };
