@@ -27,7 +27,8 @@ module.exports = {
                 .skip((page - 1) * 10)
                 .limit(10)
                 .select(select)
-
+                .sort({_id:-1}) 
+                
                 res.header('X-Total-Count', count);
                 return data;
             } else {
