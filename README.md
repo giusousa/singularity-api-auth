@@ -149,6 +149,7 @@ OBS: Não retorna informações caso o email seja 'admin' || 'supermanager'
 ### 2. INDEX
 >Method  :   GET    <br/>
 >QUERY   :   page                        number     opcional   (Caso queira limitar os resultados)    <br/>
+>            skip                        number     optional (Caso queira pular determinado número de itens) <br/>
 >            ... (queryMask format)    <br/>
 
 ### 3. EDIT

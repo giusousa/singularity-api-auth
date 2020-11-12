@@ -126,6 +126,7 @@ const routes  = express.Router();
 
 		[Segments.QUERY]: 	Joi.object().keys({
 			page: 			Joi.number(),
+			skip: 			Joi.number(),
 			managerName:	Joi.string(),
 			cpfCnpj:		Joi.string(),
 			telephone1:     Joi.string().min(10).max(13),
@@ -217,6 +218,7 @@ const routes  = express.Router();
 	routes.get('/store/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			page: 			Joi.number(),
+			skip: 			Joi.number(),
 			_id:			Joi.string(),
 			cpfCnpj:		Joi.string(),
 			telephone1:     Joi.string().min(10).max(13),
@@ -278,6 +280,7 @@ const routes  = express.Router();
 	routes.get('/contact/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			page: 			Joi.number(),
+			skip: 			Joi.number(),
 			_id:			Joi.string(),
 			managerId:		Joi.string(),
 			storeId:		Joi.string(),
@@ -319,6 +322,7 @@ const routes  = express.Router();
 	routes.get('/message/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			page: 			Joi.number(),
+			skip: 			Joi.number(),
 			_id:			Joi.string(),
 			userId:			Joi.string(),
 			contactId:		Joi.string().required(),

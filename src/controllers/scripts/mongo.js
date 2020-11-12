@@ -9,7 +9,7 @@ module.exports = {
     },
     
     async index (res, schema, query, select) {
-        const { page } =  query;
+        const { page, skip = 0 } =  query;
         delete query.page;
         
         const newQuery = Object.keys(query).reduce((acc, key) => {
@@ -24,7 +24,7 @@ module.exports = {
             if ( page ) {
                 const count = await schema.countDocuments(newQuery);
                 const data = await schema.find(newQuery)
-                .skip((page - 1) * 10)
+                .skip((page - 1) * 10 + skip)
                 .limit(10)
                 .select(select)
                 .sort({_id:-1}) 
