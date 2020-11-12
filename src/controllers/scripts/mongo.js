@@ -11,6 +11,7 @@ module.exports = {
     async index (res, schema, query, select) {
         const { page, skip = 0 } =  query;
         delete query.page;
+        delete query.skip;
         
         const newQuery = Object.keys(query).reduce((acc, key) => {
             // Enviar dados por req.query transforma os valores em strings. Essa função identifica
