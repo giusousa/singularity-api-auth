@@ -291,7 +291,7 @@ createAndUpdateMask:
 >            group [{               (array)         Optional (3) (9)
 >                userId             (string)        Required
 >                userName           (string)        Required
->            }]  
+>            }]
 >            status                 (boolean)       Optional (4)
 >            score                  (number)        Optional (5)    
 >            type                   (string)        Optional
@@ -325,6 +325,9 @@ queryMask:
 > (8) - O solicitante pode informar o seu nome.
 > (9) - Caso não seja enviado, será setado aut. como array vazia. Caso o usuário esteja logado, sua conta será 
 >       automáticamente inclusa na prop 'group'.
+> (10)- Campo setado automáticamente. Serve para armazenar informações de usuários com algum nível administrativo
+>       sobre a conversa. Os dados são salvos quando o usuário manda a primeira mensagem.
+
 
 policy:
 
@@ -351,8 +354,9 @@ policy:
 createAndUpdateMsk:
 >
 >                contactId          (string)    Required (2) (No edit)
->                userId             (string)    -------- (1) (No edit) 
+>                userId             (string)    -------- (1) (No edit)
 >                message            (string)    Required     (No edit)
+>                userName           (string)    -------- (4) (No edit)
 
 queryMask
 >
@@ -364,6 +368,8 @@ queryMask
 > (1) - Setado aut. | Refere-se informações do criador deste objeto
 > (2) - ID do arquivo em CONTACT detentor do conjunto de mensagens
 > (3) - Informando o 'contactId' da solicitação
+> (4) - Setado aut. caso o usuário tenha apenas acesso administrativo ao 'CONTACT', ou seja,
+>       não está em 'group' propriedade. Serve para identificar o usuário ADM no chat
 
 policy:
 >

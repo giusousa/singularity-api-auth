@@ -12,7 +12,6 @@ let schema = new mongoose.Schema({
     userId:        'String',
     userName:      'String',
 
-
     group:         'Object',
 
     status:        'Boolean',

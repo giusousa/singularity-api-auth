@@ -1,5 +1,6 @@
 const schema = require('../mongo/message');
 const schemaContact = require('../mongo/contact');
+const schemaUser    = require('../mongo/user');
 
 const Mongo = require('./scripts/mongo');
 
@@ -13,22 +14,37 @@ function formateBody (body) {
 async function auth( req, res) {
     const { userId, level, project, stores, body, query, method } = req;
 
-    const contact = await schemaContact.findById(body.contactId)
-        .select('group project storeId managerId')
-        .lean()
+    try {
 
-    if (!contact)
-        return res.status(400).send({error: 'document Id not found'})
+        const contact = await schemaContact.findById(body.contactId)
+            .select('group project storeId managerId')
+            .lean()
 
-    // O usuário está no grupo de membros participantes deste CONTACT
-    const groupIncludes = contact.group.filter(({userId: userIdItem, userName}) => userIdItem === userId);
-    // O usuário possui acesso a loja || é 'manager' da loja que deste CONTACT 
-    const storeIncludes = contact.storeId && ((stores.includes(contact.storeId) && level === 'superuser') || contact.managerId === userId);
-    // O usuário é 'supermanager' do projeto
-    const projectIncludes = contact.project && level === 'supermanager' && project === contact.project;
+        if (!contact)
+            return res.status(400).send({error: 'document Id not found'})
 
-    if (groupIncludes || storeIncludes || projectIncludes) 
-        return true
+        const { group, storeId, managerId } = contact
+    
+        // O usuário está no grupo de membros participantes deste CONTACT
+        const groupIncludes = group.filter(v => v.userId === userId);
+        // O usuário possui acesso a loja || é 'manager' da loja que deste CONTACT 
+        const storeIncludes = storeId && ((stores.includes(storeId) && level === 'superuser') || managerId === userId);
+        // O usuário é 'supermanager' do projeto
+        const projectIncludes = contact.project && level === 'supermanager' && project === contact.project;
+    
+        if (groupIncludes)
+            return true
+
+        const {name} = await schemaUser.findById(userId)
+            .select('name')
+            .lean()
+
+        return name
+
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({error: `Error Database - route: message | err:` + err}) 
+    }
 
     return  res.status(400).send({error: `Denied access - route: message | method: ${method}`}) 
 
@@ -40,7 +56,12 @@ module.exports = {
 
         req.body.userId = req.userId;
 
-        await auth(req, res)
+        const name = await auth(req, res)
+        console.log(name)
+
+        if (typeof name === 'string')
+            req.body.userName = name
+
         const reponse = await Mongo.create(res, schema, req.body)
         return res.send(reponse);
 
