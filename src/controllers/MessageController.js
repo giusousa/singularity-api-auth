@@ -59,7 +59,7 @@ module.exports = {
 
             const test1 = contact.group.find(({ userId: userIdGroup }) => userIdGroup === userId)
             const test2 = (level === 'manager' && contact.managerId === userId) || (level === 'superuser' && stores.includes(contact.storeId))
-            const test3 = level === 'supermanager' && contact.projectItem === project
+            const test3 = level === 'supermanager' && contact.project === project
 
             if (!test1 && !test2 && !test3)
                 return res.status(400).send({error: `Denied access - route: message - contactId ${contact._id}`})
