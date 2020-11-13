@@ -314,8 +314,8 @@ const routes  = express.Router();
 	// MENSAGENS
 	routes.post('/message/*', authMiddleware, celebrate({
 		[Segments.BODY]: Joi.object().keys({
-			message: 		Joi.string(),
-			contactId:		Joi.string(),
+			message: 		Joi.string().required(),
+			contactId:		Joi.string().required(),
 		})
 	}), MessageController.create); 
 
@@ -328,6 +328,15 @@ const routes  = express.Router();
 			contactId:		Joi.string().required(),
 		})
 	}), MessageController.index);
+
+	routes.put('/message/*', authMiddleware, celebrate({
+
+		[Segments.BODY]: Joi.object().keys({
+			_id:				Joi.string().required(),
+			usersGet:			Joi.array(),
+			usersView:			Joi.array(),
+		})
+	}), MessageController.edit); 
 
 	routes.delete('/message/*', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({

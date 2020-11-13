@@ -354,9 +354,12 @@ policy:
 createAndUpdateMsk:
 >
 >                contactId          (string)    Required (2) (No edit)
->                userId             (string)    -------- (1) (No edit)
 >                message            (string)    Required     (No edit)
+>                usersGet           (array)     -------- (5) 
+>                usersView          (array)     -------- (6) 
+>                userId             (string)    -------- (1) (No edit)
 >                userName           (string)    -------- (4) (No edit)
+
 
 queryMask
 >
@@ -370,11 +373,15 @@ queryMask
 > (3) - Informando o 'contactId' da solicitação
 > (4) - Setado aut. caso o usuário tenha apenas acesso administrativo ao 'CONTACT', ou seja,
 >       não está em 'group' propriedade. Serve para identificar o usuário ADM no chat
+> (5) - Setado aut. - Armazena o ID dos usuários que receberam a mensagem 
+> (6) - Setado aut. - Armazena o ID dos usuários que leram a mensagem
+>
 
 policy:
 >
 >   POST | GET -     (1) (2) (3)
 >   DELETE - (4)
+>   PUT    - (5)
 >
 > (1) - Caso o usuário esteja incluso na propriedade 'group' que armazena os usuários que fazem 
 >       parte e tem acesso a aquele grupo.
@@ -383,7 +390,10 @@ policy:
 > (3) - Caso a propriedade 'project' esteja preenchida, os usuários 'supermanager' com acesso a
 >       aquele projeto podem manipular o obj.
 > (4) - Apenas o usuário que criou o obj pode apagá-lo
-
+> (5) - Nos campos 'usersGet' e 'usersView' não é possível deletar IDS. Os dados informados nestes
+>       campos através de PUT é apenas adicionada ao restante. 
+>       1. É possível incluir apenas o seu próprio ID.
+>       2. Independente do valor informado na array, o sistema substituira por uma array com o ID do usuário
 
 ## PRODUCT
 

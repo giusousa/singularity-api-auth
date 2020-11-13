@@ -1,12 +1,6 @@
 const schema = require('../mongo/store');
 const Mongo = require('./scripts/mongo');
-
-function formateBody (body) {
-    const { attributes, ...rest } = body;
-    const newBody = { ...rest };
-    Object.keys(attributes).map(prop =>  newBody['attributes.'+prop] = attributes[prop] );
-    return newBody
-};
+const formateBody = require('./scripts/formatBody');
 
 module.exports = {
 

@@ -1,13 +1,7 @@
 const schema = require('../mongo/user');
 const Mongo = require('./scripts/mongo');
 const permission = require('../config/permission.json')
-
-function formateBody (body) {
-    const { attributes, ...rest } = body;
-    const newBody = { ...rest };
-    Object.keys(attributes).map(prop =>  newBody['attributes.'+prop] = attributes[prop] );
-    return newBody
-};
+const formateBody = require('./scripts/formatBody');
 
 module.exports = {
 

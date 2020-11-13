@@ -4,6 +4,8 @@ let schema = new mongoose.Schema({
     contactId:      'String',
     userId:         'String',
     userName:       'String',
+    usersGet:       'Object',
+    usersView:      'Object',
     message:        'String',
 }, { timestamps: true });
 
