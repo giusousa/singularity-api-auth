@@ -11,60 +11,49 @@ function formateBody (body) {
     return newBody
 };
 
-async function auth( req, res) {
-    const { userId, level, project, stores, body, query, method } = req;
-
-    try {
-
-        const contact = await schemaContact.findById(body.contactId)
-            .select('group project storeId managerId')
-            .lean()
-
-        if (!contact)
-            return res.status(400).send({error: 'document Id not found'})
-
-        const { group, storeId, managerId } = contact
-    
-        // O usuário está no grupo de membros participantes deste CONTACT
-        const groupIncludes = group.filter(v => v.userId === userId);
-        // O usuário possui acesso a loja || é 'manager' da loja que deste CONTACT 
-        const storeIncludes = storeId && ((stores.includes(storeId) && level === 'superuser') || managerId === userId);
-        // O usuário é 'supermanager' do projeto
-        const projectIncludes = contact.project && level === 'supermanager' && project === contact.project;
-    
-        if (groupIncludes)
-            return true
-
-        const {name} = await schemaUser.findById(userId)
-            .select('name')
-            .lean()
-
-        return name
-
-    } catch (err) {
-        console.log(err)
-        return res.status(400).send({error: `Error Database - route: message | err:` + err}) 
-    }
-
-    return  res.status(400).send({error: `Denied access - route: message | method: ${method}`}) 
-
-};
 
 module.exports = {
 
     async create(req, res) {
 
-        req.body.userId = req.userId;
+        const { userId, level, project, stores, body, query, method } = req;
 
-        const name = await auth(req, res)
-        console.log(name)
+        req.body.userId = userId;
 
-        if (typeof name === 'string')
-            req.body.userName = name
+        try {
+    
+            const contact = await schemaContact.findById(body.contactId)
+                .select('group project storeId managerId')
+                .lean()
+                    
+            const { group, storeId, managerId } = contact
+        
+            // O usuário está no grupo de membros participantes deste CONTACT
+            const groupIncludes = group.find(v => v.userId === userId);
+            // O usuário possui acesso a loja || é 'manager' da loja que deste CONTACT 
+            const storeIncludes = storeId && ((stores.includes(storeId) && level === 'superuser') || managerId === userId);
+            // O usuário é 'supermanager' do projeto
+            const projectIncludes = contact.project && level === 'supermanager' && project === contact.project;
+        
+            if (groupIncludes || storeIncludes || projectIncludes) {
+                if (!groupIncludes)  {
+                    const data = await schemaUser.findById(userId)
+                    .select('name')
+                    .lean()
 
-        const reponse = await Mongo.create(res, schema, req.body)
-        return res.send(reponse);
-
+                    req.body.userName = data.name
+                }
+                    
+                const reponse = await Mongo.create(res, schema, req.body)
+                return res.send(reponse);
+            }
+               
+        } catch (err) {
+            //console.log(err)
+            return res.status(400).send({error: `Error Database - route: message | err:` + err}) 
+        }
+        return res.status(400).send({error: `Denied access - route: message | method: ${method}`}) 
+        
     },
     async index(req, res) {
         const {level, userId, project, stores, query} = req;
