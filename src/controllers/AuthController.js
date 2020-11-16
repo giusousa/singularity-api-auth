@@ -26,17 +26,19 @@ module.exports = {
 
         const superUser = (result.level === 'admin' || result.level === 'supermanager')
 
+        const maxAge = superUser ? 2160000 : 5184000000;
         const token = generateToken({ 
             id: result._id, 
             project: result.project, 
             level: result.level, 
             managerId: result.managerId,
             stores: result.stores,
+            maxAge,
         });
 
         // Coolies de contas 'admin' e 'superuser' valem apenas por 6 horas por motivos de segurança
         // Cookie de outros leveis é válido por 60 dias
-        res.cookie('auth_token', token, { expires: new Date(Date.now() + superUser ? 21600 : 5184000000), httpOnly: true });
+        res.cookie('auth_token', token, { maxAge, httpOnly: true });
         res.json({ 
             result, 
             token

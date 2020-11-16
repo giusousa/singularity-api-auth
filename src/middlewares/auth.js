@@ -31,7 +31,6 @@ module.exports = async (req, res, next) => {
 
     }
     
-
     jwt.verify(token, authConfig.secret, (err, decoded ) => {
 
         if (err) 
