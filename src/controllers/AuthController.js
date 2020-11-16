@@ -26,7 +26,8 @@ module.exports = {
 
         const superUser = (result.level === 'admin' || result.level === 'supermanager')
 
-        const maxAge = superUser ? 2160000 : 5184000000;
+        // Em MS - 6 Horas para superUsers e 60 dias para demais
+        const maxAge = superUser ? 21600000 : 5184000000;
         const token = generateToken({ 
             id: result._id, 
             project: result.project, 
