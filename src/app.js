@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const routes = require('./routes');
-const qs = require('./utils/qs');
+const qs = require('./middlewares/qs');
 
 const app = express();                  // Cria uma variável para armazenar a aplicação (instanciar a aplicação)
 
