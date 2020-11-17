@@ -149,8 +149,13 @@ OBS: Não retorna informações caso o email seja 'admin' || 'supermanager'
 ### 2. INDEX
 >Method  :   GET    <br/>
 >QUERY   :   page                        number     opcional   (Caso queira limitar os resultados)    <br/>
->            skip                        number     optional (Caso queira pular determinado número de itens) <br/>
+>            skip                        number     optional   (Caso queira pular determinado número de itens) <br/>
+>            createdAt                   object     opcional   (filtrar por data de criação)   (1)    <br/>
+>            updatedAt                   object     opcional   (filtrar por data de update)    (1)    <br/>
 >            ... (queryMask format)    <br/>
+
+> (1) - exemplo intervalo entre datas:
+>            { $gte: '1987-10-19', $lte: '1987-10-26' }
 
 ### 3. EDIT
 >Method  :   PUT    <br/>

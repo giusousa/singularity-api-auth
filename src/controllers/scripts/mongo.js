@@ -13,18 +13,10 @@ module.exports = {
         delete query.page;
         delete query.skip;
         
-        const newQuery = Object.keys(query).reduce((acc, key) => {
-            // Enviar dados por req.query transforma os valores em strings. Essa função identifica
-            // objetos que tenham sido convertidos em strings e os converte novamente para JSON.
-            if (typeof query[key] === 'string' && query[key].slice(0,1) === '{')
-                return {...acc, [key]: JSON.parse(query[key])}
-            return {...acc, [key]: query[key]}  
-        },{});
-
         try {
             if ( page ) {
-                const count = await schema.countDocuments(newQuery);
-                const data = await schema.find(newQuery)
+                const count = await schema.countDocuments(query);
+                const data = await schema.find(query)
                 .skip((page - 1) * 10 + skip)
                 .limit(10)
                 .select(select)
@@ -33,7 +25,7 @@ module.exports = {
                 res.header('X-Total-Count', count);
                 return data;
             } else {
-                const data = await schema.find(newQuery).select(select)
+                const data = await schema.find(query).select(select)
                 return data;
             };
         } catch(err) {

@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const routes = require('./routes');
+const qs = require('./utils/qs');
 
 const app = express();                  // Cria uma variável para armazenar a aplicação (instanciar a aplicação)
 
@@ -17,6 +18,8 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(express.json());                // Informa ao express que usaremos Json nas requisições ao servidor
+// Permite que a API aceite arrays e objetos por query
+app.use(qs); 
 app.use(routes);                        // Faz com que o app utilize um arquivo externo que contem as rotas disponíveis
 app.use(errors());
              
