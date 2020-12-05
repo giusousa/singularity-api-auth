@@ -16,11 +16,21 @@ app.use(cors({
     credentials: true
 }));
 
+
 app.use(cookieParser());
 app.use(express.json());                // Informa ao express que usaremos Json nas requisições ao servidor
-// Permite que a API aceite arrays e objetos por query
-app.use(qs); 
+app.use(qs);                            // Permite que a API aceite arrays e objetos por query
 app.use(routes);                        // Faz com que o app utilize um arquivo externo que contem as rotas disponíveis
-app.use(errors());
+app.use(errors());                      // Tratamento de erros referentes ao celebrate
              
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError) return res.status(400).send(JSON.stringify({
+        error: "Invalid JSON"
+    }))
+    console.error(err);
+    res.status(500).send();
+});
+
+app.enable('trust proxy');             // But this ensures the request IP matches the client and not the load-balancer
+
 module.exports = app;

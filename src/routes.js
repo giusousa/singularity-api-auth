@@ -4,9 +4,8 @@ const axios = require('axios') ;
 const projectConfig = require('./config/project.json')
 
 const UserController = require('./controllers/UserController');
-const StoreController = require('./controllers/StoreController');
-const ContactController = require('./controllers/ContactController');
-const MessageController = require('./controllers/MessageController');
+const ProjectController = require('./controllers/ProjectController');
+const RouteController = require('./controllers/RouteController');
 
 const AuthController = require('./controllers/AuthController');
 const ForgotPassword = require('./controllers/ForgotPassword');
@@ -14,10 +13,19 @@ const ResetPassword = require('./controllers/ResetPassword');
 
 const EmailCheck	= require('./controllers/EmailCheck');
 
-const authMiddleware = require('./middlewares/auth');
-const permissionMiddleware = require('./middlewares/permission');
+const authMiddleware 		= require('./middlewares/auth');
+const permissionMiddleware 	= require('./middlewares/permission');
+const controllerRouteMiddleware	= require('./middlewares/controllerRoute');
+const controllerProjectMiddleware	= require('./middlewares/controllerProject');
+const paramsMiddleware		= require('./middlewares/params')
 
 const { celebrate, Segments, Joi } = require('celebrate');
+
+const mongoIndex = require('./mongo/index');
+const error = require('./controllers/scripts/error');
+
+const loadRouteMiddleware = require('./middlewares/loadRoute');
+const loadProjectMiddleware = require('./middlewares/loadProject');
 
 const routes  = express.Router();
 
@@ -60,297 +68,181 @@ const routes  = express.Router();
 		})
 	}), ResetPassword.create); 
 
+
 	// AUTENTICAÇÃO
-	routes.post('/auth/*', celebrate({
+	routes.post('/auth/login', celebrate({
 		[Segments.BODY]: 	Joi.object().keys({
 			email:  		Joi.string().required(),
 			password:  		Joi.string().required(),
+			projectId:		Joi.string(),
 			managerId: 		Joi.string(),
 		})
 	}), AuthController.create); 
 
-	// ====================================================
-	// ====================================================
-	// FECHADAS
-	// ====================================================
-	// ====================================================
+	routes.get('/auth/login', authMiddleware, AuthController.index); 
 
-	// 'authMiddleware' Verifica se o usuário possui um token válido.
-	// 'permissionMiddleware' Verifica se o usuário possui autorização para fazer o que quer. 
-
-	// CHECK AUTENTICAÇÃO
-	routes.get('/auth/*', authMiddleware, AuthController.index); 
-
-	// DELETAR AUTENTICAÇÃO
-	routes.delete('/auth/*', authMiddleware, AuthController.delete); 
-
+	routes.delete('/auth/login', authMiddleware, AuthController.delete); 
 
 	// CADASTRO DE USUÁRIOS
-	routes.post('/user/*', authMiddleware, celebrate({
-
+	routes.post('/auth/user', authMiddleware, celebrate({
 		[Segments.BODY]: Joi.object().keys({
-
 			name:           Joi.string().required(),
-			managerId:		Joi.string(),
-			managerName:	Joi.string(),
-			cpfCnpj:        Joi.string(),
-			birth:          Joi.string(),
-	
-			telephone1:     Joi.string().min(10).max(13),
-			telephone2:     Joi.string().min(10).max(13),
 			email:          Joi.string().required().email(),
-			whatsapp:       Joi.string().min(10).max(13),
-	
-			address:        Joi.string(),
-			addressNumber: 	Joi.string(),
-			addressComplement: Joi.string(),
-			addressRef:     Joi.string(),
-			district:       Joi.string(),
-			city:           Joi.string(),
-			uf:             Joi.string().length(2),
-			cep:            Joi.string().min(8).max(9),
-
 			password:       Joi.string().required().min(6).max(20),
 			level: 			Joi.string().required(),
-			stores:			Joi.array(),
-			secrets:		Joi.array(),
-
-			attributes:		Joi.object().required()
-			
-
+			attributes:		Joi.object().required(),
+			projectId:		Joi.string(),
+			managerName:	Joi.string(),
+			//secrets:		Joi.array(),
 		})
-
-	}), permissionMiddleware, UserController.create); 
+	}), UserController.create); 
 	
-	routes.get('/user/*', authMiddleware, celebrate({
-
+	routes.get('/auth/user', authMiddleware, celebrate({
 		[Segments.QUERY]: 	Joi.object().keys({
 			page: 			Joi.number(),
 			skip:           Joi.number(),
 			createdAt:      Joi.object(),
 			updatedAt:      Joi.object(),
-			managerName:	Joi.string(),
-			cpfCnpj:		Joi.string(),
-			telephone1:     Joi.string().min(10).max(13),
-			telephone2:     Joi.string().min(10).max(13),
-			whatsapp:       Joi.string().min(10).max(13),
-			secrets:		Joi.string(),
-			attributes:		Joi.string(),
-			managerId:		Joi.string(),
-			level: 			Joi.string(),
-			stores:			Joi.array(),
+			//secrets:		Joi.string(),
 		}),
+	}), UserController.index); 
 
-	}), permissionMiddleware, UserController.index); 
-
-	routes.put('/user/*', authMiddleware, celebrate({
+	routes.put('/auth/user', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
-
 			_id:			Joi.string().required(),
 			name:           Joi.string(),
-			cpfCnpj:        Joi.string(),
-			birth:          Joi.string(),
-
-			managerName: 	Joi.string(),
-	
-			telephone1:     Joi.string().min(10).max(13),
-			telephone2:     Joi.string().min(10).max(13),
-			whatsapp:       Joi.string().min(10).max(13),
-	
-			address:        Joi.string(),
-			addressNumber: Joi.string(),
-			addressComplement: Joi.string(),
-			addressRef:     Joi.string(),
-			district:       Joi.string(),
-			city:           Joi.string(),
-			uf:             Joi.string().length(2),
-			cep:            Joi.string().min(8).max(9),
-
 			password:       Joi.string().min(6).max(20),
-			level: 			Joi.string(),					//'admin', 'manager' and 'user'
-			stores:			Joi.array(),
-			secrets:		Joi.array(),
-			
+			level: 			Joi.string(),
 			attributes:		Joi.object(),
+			managerName:	Joi.string(),
+			//secrets:		Joi.array(),
+		}),
+		[Segments.QUERY]: Joi.object().keys({
+			editSubKey:		Joi.boolean(),
+		}),
 
-		})
+	}), UserController.edit); 
 
-	}), permissionMiddleware, UserController.edit); 
-
-	routes.delete('/user/*', authMiddleware, celebrate({
+	routes.delete('/auth/user', authMiddleware, celebrate({
 
 		[Segments.QUERY]: Joi.object().keys({
 			_id:  Joi.string().required()
 		}),
 		
-	}), permissionMiddleware, UserController.delete); 
+	}), UserController.delete); 
 
-
-	// CADASTRO DE LOJAS, EDIÇÃO E DELEÇÃO
-	routes.post('/store/*', authMiddleware, celebrate({
-
+	// CADASTRO DE PROJETOS
+	routes.post('/auth/project', authMiddleware, celebrate({
 		[Segments.BODY]: Joi.object().keys({
-
 			name:           Joi.string().required(),
-			managerId:		Joi.string(),
-			cpfCnpj:        Joi.string(),
-	
-			telephone1:     Joi.string().min(10).max(13),
-			telephone2:     Joi.string().min(10).max(13),
-			whatsapp:       Joi.string().min(10).max(13),
-	
-			address:        Joi.string(),
-			addressNumber: Joi.string(),
-			addressComplement: Joi.string(),
-			addressRef:     Joi.string(),
-			district:       Joi.string(),
-			city:           Joi.string(),
-			uf:             Joi.string().length(2),
-			cep:            Joi.string().min(8).max(9),
-				
-			attributes:		Joi.object().required(),
-			type:			Joi.string(),
-			modules:		Joi.array(),
+			status:			Joi.boolean().required(),
+			managerWorkspace:Joi.boolean().required(),
 		})
+	}), ProjectController.create); 
 
-
-	}), permissionMiddleware, StoreController.create); 
-
-	routes.get('/store/*', authMiddleware, celebrate({
+	routes.get('/auth/project', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			page: 			Joi.number(),
 			skip:           Joi.number(),
 			createdAt:      Joi.object(),
 			updatedAt:      Joi.object(),
-			_id:			Joi.string(),
-			cpfCnpj:		Joi.string(),
-			telephone1:     Joi.string().min(10).max(13),
-			telephone2:     Joi.string().min(10).max(13),
-			whatsapp:       Joi.string().min(10).max(13),
-			type:			Joi.string(),
+			name:			Joi.string(),
+			status:			Joi.boolean(),
+			statusAdmin:	Joi.boolean(),
 		})
-	}), permissionMiddleware, StoreController.index);
+	}), ProjectController.index);
 
-	routes.put('/store/*', authMiddleware, celebrate({
+	routes.put('/auth/project', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
 			_id:			Joi.string().required(),
 			name:           Joi.string(),
-			cpfCnpj:        Joi.string(),
-	
-			telephone1:     Joi.string().min(10).max(13),
-			telephone2:     Joi.string().min(10).max(13),
-			whatsapp:       Joi.string().min(10).max(13),
-	
-			address:        Joi.string(),
-			addressNumber: Joi.string(),
-			addressComplement: Joi.string(),
-			addressRef:     Joi.string(),
-			district:       Joi.string(),
-			city:           Joi.string(),
-			uf:             Joi.string().length(2),
-			cep:            Joi.string().min(8).max(9),
-			attributes: 	Joi.object(),
+			status:			Joi.boolean(),
+			statusAdmin:	Joi.boolean(),
+		}),
+		[Segments.QUERY]: Joi.object().keys({
+			editSubKey:		Joi.boolean(),
+		}),
+	}), ProjectController.edit); 
 
-			modules:		Joi.array(),
-		})
-	}), permissionMiddleware, StoreController.edit); 
-
-	routes.delete('/store/*', authMiddleware, celebrate({
+	routes.delete('/auth/project', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			_id:  Joi.string().required(),
 		})
-	}), permissionMiddleware, StoreController.delete); 
+	}), ProjectController.delete); 
 
-
-	// CADASTRO DE CONTATOS, EDIÇÃO E DELEÇÃO
-	routes.post('/contact/*', authMiddleware, celebrate({
-
+	// CADASTRO DE ROTAS
+	routes.post('/auth/route', authMiddleware, celebrate({
 		[Segments.BODY]: Joi.object().keys({
-			project:			Joi.string(),
-			storeId:			Joi.string(),
-			userName:			Joi.string().required(),
-			group:				Joi.array(),
-			status:				Joi.boolean(),
-			score:				Joi.number(),
-			type:				Joi.string(),
-			title:				Joi.string(),
-			attributes:			Joi.object(),
-		})
-
-	}), ContactController.create); 
-
-	routes.get('/contact/*', authMiddleware, celebrate({
-		[Segments.QUERY]: Joi.object().keys({
-			page: 			Joi.number(),
-			skip:           Joi.number(),
-			createdAt:      Joi.object(),
-			updatedAt:      Joi.object(),
-			_id:			Joi.string(),
-			managerId:		Joi.string(),
-			storeId:		Joi.string(),
-			userId:			Joi.string(),
+			url:           	Joi.string().required(),
+			projectId:     	Joi.string().required(),
+			methods:		Joi.array().required(),
+			policy:			Joi.object().required(),
+			preDatabase:	Joi.object(),
+			posDatabase:	Joi.object(),
+			params:			Joi.object().required(),
+			modelDb:		Joi.object(),
 			status:			Joi.boolean(),
-			score:			Joi.number(),
-			type:			Joi.string(),
-			title:			Joi.string(),
+			redis:			Joi.boolean(),
+			socket:			Joi.boolean(),
+			socketQueryStart:Joi.object(),
+			socketCreatePreQuery:Joi.string(),
+			socketCreatePolicy:Joi.string()
 		})
-	}), ContactController.index);
+	}), RouteController.create); 
 
-	routes.put('/contact/*', authMiddleware, celebrate({
-
-		[Segments.BODY]: Joi.object().keys({
-			_id:				Joi.string().required(),
-			group:				Joi.array(),
-			status:				Joi.boolean(),
-			score:				Joi.number(),
-			type:				Joi.string(),
-			title:				Joi.string(),
-			attributes:			Joi.object(),
-		})
-	}), ContactController.edit); 
-
-	routes.delete('/contact/*', authMiddleware, celebrate({
-		[Segments.QUERY]: Joi.object().keys({
-			_id:  Joi.string().required()
-		})
-	}), ContactController.delete); 
-
-	// MENSAGENS
-	routes.post('/message/*', authMiddleware, celebrate({
-		[Segments.BODY]: Joi.object().keys({
-			message: 		Joi.string().required(),
-			contactId:		Joi.string().required(),
-		})
-	}), MessageController.create); 
-
-	routes.get('/message/*', authMiddleware, celebrate({
+	routes.get('/auth/route', authMiddleware, celebrate({
 		[Segments.QUERY]: Joi.object().keys({
 			page: 			Joi.number(),
 			skip:           Joi.number(),
 			createdAt:      Joi.object(),
 			updatedAt:      Joi.object(),
-			_id:			Joi.string(),
-			userId:			Joi.string(),
-			contactId:		Joi.string().required(),
-		})
-	}), MessageController.index);
 
-	routes.put('/message/*', authMiddleware, celebrate({
+			projectId:     	Joi.string(),
+			status:			Joi.boolean(),
+		})
+	}), RouteController.index);
+
+	routes.put('/auth/route', authMiddleware, celebrate({
 
 		[Segments.BODY]: Joi.object().keys({
-			_id:				Joi.string().required(),
-			usersGet:			Joi.array(),
-			usersView:			Joi.array(),
-		})
-	}), MessageController.edit); 
-
-	routes.delete('/message/*', authMiddleware, celebrate({
+			_id:			Joi.string().required(),
+			methods:		Joi.array(),
+			policy:			Joi.object(),
+			preDatabase:	Joi.object(),
+			posDatabase:	Joi.object(),
+			params:			Joi.object(),
+			modelDb:		Joi.object(),
+			status:			Joi.boolean(),
+			redis:			Joi.boolean(),
+			socket:			Joi.boolean(),
+			socketQueryStart:Joi.object(),
+			socketCreatePreQuery:Joi.string(),
+			socketCreatePolicy:Joi.string(),
+		}),
 		[Segments.QUERY]: Joi.object().keys({
-			_id:  Joi.string().required()
-		})
-	}), MessageController.delete); 
+			editSubKey:		Joi.boolean(),
+		}),
+	}), RouteController.edit); 
 
+	routes.delete('/auth/route', authMiddleware, celebrate({
+		[Segments.QUERY]: Joi.object().keys({
+			_id:  Joi.string().required(),
+		})
+	}), RouteController.delete); 
+
+	// ROTAS PERSONALIZADAS LOCAIS
+	routes.all('/route/*', authMiddleware, loadRouteMiddleware, paramsMiddleware, controllerRouteMiddleware); 
+	// ROTAS PERSONALIZADAS DE PROJETO
+	routes.all('/project/*', loadProjectMiddleware, authMiddleware, paramsMiddleware, controllerProjectMiddleware);
+
+	/** catch 404 and forward to error handler */
+	routes.all('*', (req, res) => {
+		return res.status(404).json({
+		success: false,
+		message: 'API endpoint doesnt exist'
+		})
+	});
 
 module.exports = routes;        // Permite a exportação da váriavel 'routes'.

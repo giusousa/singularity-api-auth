@@ -10,7 +10,7 @@
 # USUÁRIOS - Regras
 
     admin           - controle sobre todos os usuários 'supermanager'
-    supermanager    - controle sobre stores e users do seu projeto
+    supermanager    - controle users dos seus projetos
     manager         - controle sobre suas stores e sub-users
     superuser       - controle sobre suas stores e sub-users
     user            - sem controle relevante
@@ -54,8 +54,7 @@ URL     : /auth/<project>   (Se você for admin, usar 'auth' como nome de projet
 BODY   :  managerId       (string)   Obrigatório para (superuser, manager)
           email           (string)   Obrigatório para (todos)
           password        (string)   Obrigatório para (todos)
-
-// managerId = Referência do manager do qual aquele cadastro pertence
+          projectId       (string)   Obrigatório para (manager, superuser, user, client)
 
 ==================================================================================================
 
@@ -159,100 +158,55 @@ OBS: Não retorna informações caso o email seja 'admin' || 'supermanager'
 
 ### 3. EDIT
 >Method  :   PUT    <br/>
->BODY    :   _id    <br/>
->            ... (createAndUpdateMask format)    <br/>
-> Caso alguma propriedade de 'attributes' esteja sendo atualizada, o sistema identificará quais props você
-> está informando e atualizará apenas as respectivas chaves.
+>QUERY   :   editSubKey     (boolean)      (1)  <br/>
+>BODY    :   _id            (string)            <br/>
+>            ... (createAndUpdateMask format)   <br/>
+
+> (1) - Este parâmetro permite utilizar o salvamento inteligente de informações.
+>       false  - Substitui os parâmetros informados em 'body'
+>       true   - Substitui apenas os parâmetros filhos dos parâmetros informados em 'body'
+>       Obs: Se não informado, será setado aut. como 'true'
+
 
 ### 4. DELETE
 >Method  :   DELETE    <br/>
 >QUERY   :   _id    <br/>
 
 
-## STORE
->
->ROUTE:      STORE     
->URL:        /store <br/>
->METHODS:    POST | GET | PUT | DELETE
-
-createAndUpdateMask:
->
->           name            (string)                        Required
->           managerId       (string)                        Required from level (supermanager) (1) (2)
->           attributes      (object)                        Required
->           cpfCnpj         (string)                        Optional
->           telephone1      (string) Min 10 Máx 11          Optional
->           telephone2      (string) Min 10 Máx 11          Optional
->           whatsapp        (string) Min 10 Máx 11          Optional
->           address         (string)                        Optional
->           addressNumber   (string)                        Optional
->           addressComplement (string)                      Optional
->           addressRef      (string)                        Optional
->           district        (string)                        Optional
->           city            (string)                        Optional
->           uf              (string)                        Optional
->           cep             (string)                        Optional
->           type            (string)                        Optional (2) (3)
->           modules         (array)                         Optional (4)
->           project         (string)                        -------- (5) 
->           
->
-> (1) - // ID do user que será próprietário da store. Necessário apenas caso você seja um 'supermanager',
-> pois caso você seja um 'manager', esse valor será setado automáticamente.
-> (2) - // Não é possível alterar este campo após a criação da loja, por isso, esse campo não é reconhecido
-> se você solicitar atualização do arquivo. (method PUT)
-> (3) - // Este campo pode ser utilizado para dividir as lojas por ramo/tipo.
-> (4) - // Este campo pode ser utilizado para armazenar os modulos que a Loja pode acessar no site/app
-> (5) - // Setado automaticamente. Não pode ser editado
-
-queryMask:
->           cpfCnpj         (string)   
->           _id             (string)     
->           telephone1      (string) Min 10 Máx 11          
->           telephone2      (string) Min 10 Máx 11          
->           whatsapp        (string) Min 10 Máx 11
->           type            (string)
-     
-> Obs1. Usuário 'manager' podem acessar as lojas com mesmo 'managerId' que o seu.
-> Obs2. Outros usuários podem acessar as lojas que constam nos seus cadastros.
-
 ## USER
->
+
 >ROUTE:      USER     
 >URL:        /user <br/>
 >METHODS:    POST | GET | PUT | DELETE
 
-createAndUpdateMask:
->            name            (string)                       Required
->            managerId       (string)                       Required from level (admin) and (supermanager) (1) (2)
->            managerName     (string)                       Optional
->            cpfCnpj         (string)                       Optional
->            birth           (string)                       Optional
->            telephone1      (string) Min 10 Máx 11         Optional
->            telephone2      (string) Min 10 Máx 11         Optional
->            email           (string)                       Required (2)
->            whatsapp        (string) Min 10 Máx 11         Optional
->            address         (string)                       Optional
->            addressNumber   (string)                       Optional
->            addressComplement (string)                     Optional
->            addressRef      (string)                       Optional
->            district        (string)                       Optional
->            city            (string)                       Optional 
->            uf              (string)                       Optional 
->            cep             (string)                       Optional 
->            password        (string)                       Required Min 6 Máx 20
->            level           (string)                       Required (3)
->            stores          (array)                        Optional (3)  
->            secrets         (array)                        Optional (4) 
->            
->            attributes      (object)                       Optional
->
+Object:
+>   parameter:          type:       GET:        POST:        PUT:     
+>   -------------------------------------------------------------------------------------------- 
+>   creatorId           (string)                Set. aut     (No edit)
+>   managerId           (string)                Set aut.     (No edit)       (2)
+>   projectId           (string)                Required (4) (No edit)       (5)
+>   name                (string)                Required     
+>   email               (string)                Required     (No edit)
+>   password            (string)                Required                    Min 6 Máx 20
+>   level               (string)                Required                    (3)
+>   managerName         (string)                Optional                    (7)
+>   attributes          (object)                Required                    
 
-> (1) - // ID do grupo que o usuário criado fará parte. Necessário apenas caso você seja um 'admin' ou 'supermanager',
-> pois caso você seja outro level, esse valor será setado automáticamente.
-> (2) - // Não é possível alterar este campo após a criação do user, por isso, esse campo não é reconhecido
-> se você solicitar atualização do arquivo. (method PUT)
-> (3) - Campos não podem ser alterados pelo próprio user, apenas por alguém de level superior.
+
+> (1) É possível manipular apenas usuários de níveis inferiores
+> (2) Um supermanager só pode manipular users 'manager' com que tiverem o seu mesmo 'supermanagerId'
+> (3) Em projetos 'managerWorkspace' usuários 'manager' e abaixo só podem manipular outros com o seu mesmo 'managerId'
+
+> (4) Required from level 'supermanager' (on create users 'manager')
+> (5) Separar usuários ('manager' e subordinados) entre os projetos.
+>   - Usuários 'admin' e 'superuser' não utilizam este campo.
+> (6) Separar usuários ('manager' e subordinados) dentro do próprio projeto.
+>   - Usuários 'admin', 'superuser', 'manager' e projetos c/prop ('managerWorkspace' === false), não utilizam este campo.
+> (7) Utilizado para nomear um workspace de determinado manager
+
+
+
+
 > (4) - O campo secrets é utilizado para armazenar chaves secretas. Por este motivo, esta chave não é retornada
 > quando você receber informações de um usuário. Apenas superusuários podem criar e editar.
 > (5) - 'managerName' tem a função de "dar um nome para o grupo de usuários" pertencentes ao mesmo 'managerId'.
@@ -261,23 +215,100 @@ createAndUpdateMask:
 > 'manager', pois isso permitirá a execução da função 'email_check' que pesquisa e retorna os nomes dos grupos
 > que determinado email faz parte. 
 
-queryMask:
->           managerName     (string) 
->           cpfCnpj         (string)                        
->           telephone1      (string) Min 10 Máx 11          
->           telephone2      (string) Min 10 Máx 11          
->           whatsapp        (string) Min 10 Máx 11  
->           attributes      (object)
->           managerId       (string)
->           secrets         (array)
->           stores          (array)                        
->           level           (string)                      
 
->   Obs1. Um user tem acesso somente a users de niveis inferiores.
->   Obs2. 'manager' podem ver todos do grupo
->   Obs3. 'superuser' e 'user' podem ver apenas usuários de suas lojas
->   Obs4. Caso o usuário a ser criado/manipulado seja do level 'admin' usar 'auth' como nome do projeto
->   Obs5.     QUERY:   'managerId'   Para criar usuários 'admin', 'supermanager', 'manager',informe 'admin' na QUERY. Para os outros tipos de usuário, >>   informe o managerId padrão da organização que você está manipulando.
+## PROJECT
+>ROUTE:      PROJECT
+>URL:        /project <br/>
+>METHODS:    POST | GET | PUT | DELETE - Required from level (supermanager of project) 
+
+Object:
+>   parameter:          type:       GET:        POST:        PUT:     
+>   -------------------------------------------------------------------------------------------- 
+>   name                (string)    true        Required
+>   supermanagerId      (string)    true        Set aut.     (No edit)
+>   status              (boolean)   true        Required     
+>   statusAdmin         (boolean)   true        Set aut.     
+>   managerWorkspace    (boolean)               Required     (No edit)      (1)
+
+> (1) - Se 'true', cada 'manager' do projeto terá seu próprio espaço. Isso permite que um usuário 
+> tenha um mesmo e-mail cadastrado em vários 'managers' diferentes de um mesmo projeto.
+
+## ROUTE
+>ROUTE:      ROUTE     
+>URL:        /route <br/>
+>METHODS:    POST | GET | PUT | DELETE - Required from level (supermanager of project)
+
+Object:
+>   parameter:          type:       GET:        POST:        PUT:                 VALUES:
+>   -------------------------------------------------------------------------------------------- 
+>   url                 (string)                Required     (No edit)
+>   projectId           (string)    true        Required     (No edit)
+>   supermanagerId      (string)                set.aut      (No edit)
+>   methods             (array)                 Required                 (1)
+>   policy              (object)                Required                 (2)
+
+>   preDatabase         (object)                Optional                 (3)
+>   posDatabase         (object)                Optional                 (4)
+
+>   params              (object)                Required                 (5)
+>   modelDb             (object)                Optional                 (6)
+>   status              (boolean)   true        Optional     
+>   redis               (boolean)               Optional                 (7)
+>   socket              (boolean)               Optional                 (8)
+>   socketQueryStart    (object)                Optional                 (9)
+>   socketCreatePolicy  (string-Function)       Optional                 (10)
+
+
+> (1) - ex. methods: [ "get", "put", "delete" ] <-- Contém os methods ativados para esta rota
+> (2) ex. policy: {
+>       post:    [ "manager", "superuser"],     <-- A array contem os leveis que podem acessar o method
+>       get:     [ "manager" ],
+>       put:     [ "manager" ],
+>       delete:  [ "manager" ],
+>   }
+> (3) ex. preDatabase: {
+>       post:   () => {},           <-- Função que será executada antes da operação no banco de dados
+>       get:    () => {},       
+>       put:    () => {},
+>       delete: () => {}
+>   }
+> (4) - Mesma coisa de 'preDatabase', porém a função será executada após a operação no banco de dados
+> (5) - Contém as validações de body e query das requisições utilizando o modulo NPM 'celebrate'.
+>   ex: params: {
+>       post:   celebrate({
+>           [Segments.BODY]: Joi.object().keys({
+>               param1:      Joi.string().required(),
+>               param2:      Joi.array(),
+>           }),
+>           [Segments.QUERY]: Joi.object().keys({
+>               param1:      Joi.number(),
+>           }),
+>       }),
+>       get:    ...,       
+>       put:    ...,
+>       delete: ...,
+>   }
+> (6) - Contem o modelo de organização deste objeto no banco de dados.
+>   ex: modelDb: {
+>        param1:   'Object',
+>        param2:   'Boolean',
+>        param3:   'String',    
+>   }
+> (7) - Informa se este objeto deve ser salvo/atualizado/excluido na memória 'REDIS' para acesso instântaneo.
+> (8) - Define se esta collection é sincronizada possui sincronização por socket. (DEFAULT: false)
+> (9) - Define parametros para que a pesquisa retorne os items iniciais (ao socket conectar)
+> (10)- Define limites para quem deve receber uma atualização quando um novo item for criado nesta collection.
+
+
+
+
+
+
+
+
+
+
+
 
 ## CONTACT
 >
@@ -287,29 +318,22 @@ queryMask:
 >DETAIL:     Este objecto pode ser utilizado para gerenciar CONTATOS entre usuários | lojas cadastradas.
 
 createAndUpdateMask:
->            managerId              (string)        -------- (1) (No edit)    
->            managerName            (string)        -------- (1) (No edit)    
->            userId                 (string)        -------- (1) (No edit)    
->            userName               (string)        Required (8) (No edit)    
->            storeId                (string)        Optional (2) (No edit)    
->            storeName              (string)        -------- (7) (No edit)    
+>            managerId              (string)        -------- (1) (No edit)     
+>            creatorId              (string)        -------- (1) (No edit)        
 >            group [{               (array)         Optional (3) (9)
 >                userId             (string)        Required
 >                userName           (string)        Required
 >            }]
 >            status                 (boolean)       Optional (4)
 >            score                  (number)        Optional (5)    
->            type                   (string)        Optional
+>            type                   (string)        Optional (2)
 >            title                  (string)        Optional
->            project                (string)        Optional (6) (No edit) 
->            attributes             (object)        Optional 
 >
 queryMask:
 >
 >            _id                    (string)
 >            managerId              (string)
->            storeId                (string)
->            userId                 (string)
+>            creatorId              (string)
 >            group                  (string)
 >            status                 (boolean)
 >            score                  (number)
@@ -317,36 +341,27 @@ queryMask:
 >            title                  (string)
 
 > (1) - Setado aut. | Refere-se informações do criador deste objeto
-> (2) - Este campo é opcional, caso seja preenchido, os membros tipo 'manager', 'superuser' e 'user'
->       com acesso a loja em questão também terão acesso aos dados deste objeto.
+> (2) - Tipo do contato
+>       - sac    - contato de um user do aplicativo ao supermanager do projeto
+>       - team   - conversa entre duas ou mais pessoas de um managerId
+ 
 > (3) - Usuários que tem acesso aos dados deste objeto.
 > (4) - Caso não seja informado, será setado automaticamente como 'true'. Caso seja setado como falso, pode 
 >       considerar-se que aquele objeto é obsoleto|excluido|arquivado
 > (5) - Pode ser utilizado em casos que este objeto é um 'atendimento ao cliente' que pode requerer
 >       que o solicitante dê uma nota ao atendimento ao final.
-> (6) - Os administradores do projeto também podem ter acesso as informações de 'CONTACT' se este campo for
->       informado.
-> (7) - Setado aut se for informado um Id de uma loja válida.
-> (8) - O solicitante pode informar o seu nome.
 > (9) - Caso não seja enviado, será setado aut. como array vazia. Caso o usuário esteja logado, sua conta será 
 >       automáticamente inclusa na prop 'group'.
-> (10)- Campo setado automáticamente. Serve para armazenar informações de usuários com algum nível administrativo
->       sobre a conversa. Os dados são salvos quando o usuário manda a primeira mensagem.
 
 
 policy:
 
 >   POST - Live (1)
->   GET | PUT | DELETE -  (2) (3) (4)
+>   GET | PUT | DELETE -  (2)
 
 > (1) - Rota de acesso livre.  (does not require authentication)
 > (2) - Caso o usuário esteja incluso na propriedade 'group' que armazena os usuários que fazem 
 >       parte e tem acesso a aquele grupo.
-> (3) - Caso a propriedade 'storeId' esteja preenchida, os usuários 'manager' e 'superuser' que
->       possuirem acesso a esta loja também podem manipular o obj.
-> (4) - Caso a propriedade 'project' esteja preenchida, os usuários 'supermanager' com acesso a
->       aquele projeto podem manipular o obj.
-
 
 ## MESSAGE
 
@@ -400,7 +415,7 @@ policy:
 >       1. É possível incluir apenas o seu próprio ID.
 >       2. Independente do valor informado na array, o sistema substituira por uma array com o ID do usuário
 
-## PRODUCT
+
 
 ## PROCEDIMENTOS
 
