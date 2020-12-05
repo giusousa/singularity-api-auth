@@ -127,6 +127,7 @@ const Socket =
     const project = await getRedis(data.projectId, 'project');
     const route   = await getRedis(data.projectId + '/' + data.url, 'route');
 
+    
     if(!route.socket)
       return console.log('Socket disabled in the route')
 
