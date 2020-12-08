@@ -4,8 +4,8 @@ const redis = require('redis');
 const socketRedis = require('socket.io-redis');
 const io = require('socket.io')();
 
-const REDISHOST = process.env.REDISHOST || 'localhost';
-const REDISPORT = process.env.REDISPORT || 6379;
+const REDISHOST = process.env.NODE_ENV === 'DEV' && process.env.REDISHOST ? process.env.REDISHOST : 'localhost';
+const REDISPORT = process.env.NODE_ENV === 'DEV' && process.env.REDISPORT ? process.env.REDISPORT : 6379;
 
 const authSocket = require('../middlewares/authSocket');
 const {getRedis}=require('./redis');
