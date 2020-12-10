@@ -32,7 +32,6 @@ module.exports = async (req, res, contactId) => {
         return {groupIncludes, storeIncludes, projectIncludes};
 
     } catch (err) {
-        console.log(err)
         res.status(400).send({error: `Error Database | err:` + err});
         return
     }
