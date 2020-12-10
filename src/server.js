@@ -8,7 +8,7 @@ const { io } = require('./services/socket');
 
 io.attach(server, {path: '/socket'});
 
-const port = process.env.NODE_ENV == 'DEV' ? 3333 : 8080
+const port = process.env['PORT_' + process.env.NODE_ENV]
 
 server.listen(port);
 

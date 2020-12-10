@@ -29,9 +29,10 @@ io.on('connection', async (socket) => {
   
   const queryRoute = {socket: true, status: true, projectId}
   const routes = await  schemaRoute.find(queryRoute).lean();
+  const port = process.env['PORT_' + process.env.NODE_ENV];
 
   const api = axios.create({
-    baseURL: 'http://localhost:3333/',
+    baseURL: `http://localhost:${port}/`,
     headers: { authorization: `Bearer ${token}`},
   });
 
