@@ -47,3 +47,4 @@ module.exports.mongoIndex       = mongoIndex
 module.exports.supermanagerApi  = supermanagerApi
 module.exports.error            = error
 module.exports.getRedis         = getRedis
+module.exports.env              = process.env.NODE_ENV

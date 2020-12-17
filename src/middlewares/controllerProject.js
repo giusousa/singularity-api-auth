@@ -1,8 +1,12 @@
-const {mongoIndex, supermanagerApi, error} = require('./controllerModule');
+const {mongoIndex, supermanagerApi, error, env} = require('./controllerModule');
 
 module.exports = async (req, res, next) => {
 
     const api       = await supermanagerApi(req.projectData.supermanagerId);
+
+    const handleError = (msg, err = '') => {
+        error(req, res, msg, err)
+    };
 
     let responseData = {}
 
