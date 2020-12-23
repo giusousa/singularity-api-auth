@@ -56,7 +56,7 @@ module.exports = {
         // Coolies de contas 'admin' e 'superuser' valem apenas por 6 horas por motivos de segurança
         // Cookie de outros leveis é válido por 60 dias
         res.cookie('auth_token', token, { maxAge, httpOnly: true });
-        res.json({ result, token });
+        res.json({ result: userData, token });
         
     },
 

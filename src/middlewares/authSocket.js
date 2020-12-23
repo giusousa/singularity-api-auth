@@ -9,6 +9,8 @@ module.exports = (socket, next) => {
 
     const [ authToken ] = cookie.split(' ').filter(string => string.includes('auth_token='))
     
+    console.log(authToken)
+    
     if (authToken) {
 
       const token = (() => {

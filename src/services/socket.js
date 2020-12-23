@@ -78,6 +78,10 @@ io.on('connection', async (socket) => {
     socket.emit('start', dataResponse);
   });
 
+  socket.on('disconnect', (reason) => {
+    console.log('disconnect: ' + reason)
+  });
+
 });
 
 const Socket = 
