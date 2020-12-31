@@ -23,6 +23,9 @@ module.exports = async (req, res, next) => {
     if(!route.methods.includes(req.method.toLowerCase()))
         return res.status(400).send({error: 'Method disablet'})
 
+    if(route.type !== 'project')
+        return res.status(400).send({error: 'Route with type informed not found'})
+
     req.routeData = route;
     req.projectData = project;
 

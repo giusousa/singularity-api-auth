@@ -27,13 +27,7 @@ module.exports = {
             return error(req, res, 'This route already exists');
 
         req.body.supermanagerId = req.userData._id;
-        if (req.body.redis === undefined)
-            req.body.redis = false
-        if (req.body.socket === undefined)
-            req.body.socket = false
-        if (req.body.status === undefined)
-            req.body.status = false 
-            
+  
         const response = await Mongo.create(res, schema, req.body);
 
         return res.send(response);

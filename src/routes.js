@@ -188,7 +188,8 @@ const routes  = express.Router();
 			socket:			Joi.boolean(),
 			socketQueryStart:Joi.object(),
 			socketCreatePreQuery:Joi.string(),
-			socketCreatePolicy:Joi.string()
+			socketCreatePolicy:Joi.string(),
+			type:			Joi.string().required(), //	route || project
 		})
 	}), RouteController.create); 
 
@@ -201,6 +202,7 @@ const routes  = express.Router();
 
 			projectId:     	Joi.string(),
 			status:			Joi.boolean(),
+			type:			Joi.string(), //	route || project
 		})
 	}), RouteController.index);
 
@@ -220,6 +222,7 @@ const routes  = express.Router();
 			socketQueryStart:Joi.object(),
 			socketCreatePreQuery:Joi.string(),
 			socketCreatePolicy:Joi.string(),
+			type:			Joi.string(), //	route || project
 		}),
 		[Segments.QUERY]: Joi.object().keys({
 			editSubKey:		Joi.boolean(),

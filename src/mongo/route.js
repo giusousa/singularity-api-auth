@@ -10,12 +10,22 @@ let schema = new mongoose.Schema({
     posDatabase:    'Object',
     params:         'Object',
     modelDb:        'Object',
-    status:         'Boolean',
-    redis:          'Boolean',
-    socket:           'Boolean',
+    status:    {
+        type: 'Boolean',
+        default: false
+    },
+    redis:    {
+        type: 'Boolean',
+        default: false
+    },
+    socket:   {
+        type: 'Boolean',
+        default: false
+    },
     socketQueryStart: 'Object',
     socketCreatePreQuery:'String',
     socketCreatePolicy:'String',
+    type:           'String',
 }, { timestamps: true });
 
 let model = mongoose.model( 'Route', schema)

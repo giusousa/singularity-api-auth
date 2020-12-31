@@ -32,6 +32,9 @@ module.exports = async (req, res, next) => {
         if (!auth) return 
     }
 
+    if(route.type !== 'route')
+        return res.status(400).send({error: 'Route with type informed not found'})
+
     // Verifica se existe um projeto ATIVO com esse ID
     const project = await getRedis(projectId, 'project');
     if (!project)
