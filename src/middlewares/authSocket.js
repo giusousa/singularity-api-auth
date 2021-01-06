@@ -19,7 +19,7 @@ module.exports = (socket, next) => {
         return authToken.substring(11, authToken.length)
       })()
 
-      jwt.verify(token, authConfig.secret, function(err, decoded) {
+      jwt.verify(token, authConfig[process.env.NODE_ENV], function(err, decoded) {
         if (err) 
           return next(new Error('authentication_error'));
           

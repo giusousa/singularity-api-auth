@@ -1,45 +1,16 @@
-const { getRedis, error, env } = require('./controllerModule');
+const { getRedis, error, env, getRedisRoute, createMongoSchema, datefns } = require('./controllerModule');
 const schemaModel   = require('../mongo/model')
 const Mongo          = require('../controllers/scripts/mongo');
 const {Socket}      = require('../services/socket');
 
 module.exports = async (req, res, next) => {
 
-    // Cria um esquema mongo de acordo com a rota informada
-    const createMongoSchema = async (routeData) => {
-        // Schema mongo onde as informações desta url são salvas. 
-        if(!routeData)
-            routeData = req.routeData
-
-        if (!routeData.modelDb)
-            routeData.modelDb ={}
-        // Adiciona os campos projectId e managerId->(Se for o caso) por padrão a todos os modelos.
-        const modelDb = {...routeData.modelDb , projectId: 'String', creatorId: 'String'}
-        
-        if (req.projectData.managerWorkspace) 
-            modelDb.managerId = 'String' 
-
-        const schemaName = routeData.projectId + '/' + routeData.url
-        const schema = await schemaModel(schemaName, modelDb);
-        return schema
-
-    };
     // Schema mongo padrão da rota que está sendo utilizada
-    const schemaMongoDefault = await createMongoSchema();
-
-    // Baixa os dados de uma outra rota do projeto da memória Redis
-    const getRedisRouteProject = async (url) => {
-        if (url === req.routeData.url)
-            return req.routeData
-        const redisId = req.projectData._id + '/' + url;
-        const data     = await getRedis(redisId, 'route')
-        const schema   = await createMongoSchema(data);
-        return { data, schema }
-    };
+    const schemaMongoDefault = await createMongoSchema(req, req.routeData);
 
     // Utilizado para fazer o download de alguma informação do Redis
     const getRedisItemProject = async (url, _id) => {
-        const { data, schema } = await getRedisRouteProject(url);
+        const { data, schema } = await getRedisRoute(req, url);
         const schemaName = data.projectId + '/' + data.url + '/' + _id
         return  await getRedis(schemaName , schema)
     };

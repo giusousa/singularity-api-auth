@@ -34,7 +34,7 @@ module.exports = async (req, res, next) => {
 
     }
     
-    jwt.verify(token, authConfig.secret, async (err, decoded ) => {
+    jwt.verify(token, authConfig[process.env.NODE_ENV], async (err, decoded ) => {
 
         if (err) 
             return res.status(401).send({ error: 'Token invalid'})

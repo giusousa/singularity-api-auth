@@ -12,8 +12,13 @@ module.exports = async (req, res, next) => {
         if (!evalValidation)
             return error(req, res, 'Schema celebrate invalid');
  
-        const celebrateFuncion = eval(celebrateSchema);
-        await celebrateFuncion(req, res, next)
+        try {
+            const celebrateFuncion = eval(celebrateSchema);
+            await celebrateFuncion(req, res, next)
+        } catch (err) {
+            return error(req, res, 'Schema celebrate erro');
+        }
+
     } else {
         next();
     }
