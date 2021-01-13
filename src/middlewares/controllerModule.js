@@ -91,10 +91,13 @@ const queryUsersProject = async (req, query, select) => {
 };
 
 // Salve data DB
-const saveRouteDatabase = async (req, body) => {
+const saveRouteDatabase = async (req, route, body) => {
     if(!body.managerId || !body.creatorId || !body.projectId)
         return Promise.reject('It is mandatory to inform the fields: projectId, managerId, creatorId');
-    const { schema: schemaMongoFunnelHistory}  = await getRedisRoute(req, 'funnelhistory');
+    if(!route)
+        return Promise.reject('It is mandatory to inform the route');
+
+    const { schema: schemaMongoFunnelHistory}  = await getRedisRoute(req, route);
     const data = await schemaMongoFunnelHistory.create(body);
     return data
 };
