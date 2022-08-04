@@ -56,6 +56,8 @@ BODY   :  managerId       (string)   Obrigatório para (superuser, manager)
           password        (string)   Obrigatório para (todos)
           projectId       (string)   Obrigatório para (manager, superuser, user, client)
 
+OBS: Usuários "manager" devem informar o seu próprio id no campo "managerId"
+
 ==================================================================================================
 
 2. Intenção:
@@ -203,6 +205,8 @@ Object:
 > (6) Separar usuários ('manager' e subordinados) dentro do próprio projeto.
 >   - Usuários 'admin', 'superuser', 'manager' e projetos c/prop ('managerWorkspace' === false), não utilizam este campo.
 > (7) Utilizado para nomear um workspace de determinado manager
+>REGRA 1 - Usuários 'admin' devem utilizar 'auth' como nome de projeto
+>        - Outros usuários devem utilizar o projeto a qual pertencem
 
 
 
@@ -437,3 +441,224 @@ policy:
 >>
 >> Teste a rota
 >> Realize as alterações necessárias no JTEST
+
+
+
+
+
+### Criando um projeto do zero com exemplos praticos
+## Criando um projeto básico
+
+# 0. Criando um admin
+# 1. Criando o superManager
+>>
+>>
+>> 1. Faça login de um user "admin
+>> 2. Envie um "POST" para a url .../auth/user com o body JSON
+>>
+>> REQ
+>> {
+>>		"name": "Joao da silva",
+>>		"email":"joao@gmail.com",
+>>		"password": "senha",
+>>		"level": "supermanager",
+>>		"attributes": {},
+>>		"projectId": "auth"
+>> }
+>>
+>> RES
+>>{
+>>  "_id": "618c5004e45G5675acbcfbf1",
+>> "name": "Joao da silva",
+>>  "email": "joao@gmail.com",
+>>  "level": "supermanager",
+>>  "attributes": {},
+>>  "creatorId": "5ed4327e7445KK157822493c",
+>>  "createdAt": "2021-11-10T23:04:36.248Z",
+>>  "updatedAt": "2021-11-10T23:04:36.248Z",
+>>  "__v": 0
+>> }
+>>
+>>
+
+# 2. Criando o projeto
+>>
+>> 1. Faça login de um user "supermanager"
+>> 2. Envie um "Post" para a url .../auth/project com o body JSON
+>>
+>> REQ
+>> { 
+>>	"name": "nome_do_projeto",
+>>	"status": true,
+>>	"managerWorkspace": true
+>> }
+>>
+>> RES
+>>
+>> {
+>>  "_id": "618c5e4475F3615acbcfbf2",
+>>  "name": "nome_do_projeto",
+>>  "status": true,
+>>  "managerWorkspace": true,
+>>  "supermanagerId": "618c5004e0eb6615acbcfbf1",
+>>  "statusAdmin": true,
+>>  "createdAt": "2021-11-10T23:08:02.462Z",
+>>  "updatedAt": "2021-11-10T23:08:02.462Z",
+>>  "__v": 0
+>> }
+>>
+# 3. Criando um manager
+>>
+>> {
+>>		"name": "exeplo a",
+>>		"email":"exemplo+manager@gmail.com",
+>>		"password": "123456",
+>>		"level": "manager",
+>>		"attributes": {},
+>>		"projectId": "618c51e8e3cd6615acbcfbf3"
+>> }
+>>
+
+# 4. Criando um superuser
+# 5. Criando um user
+# 6. Criando a rota contact
+# 7. Criando a rota message
+# 8. Criando a rota store
+# 9. Criando uma rota personalizada
+>>
+>> REQ
+>> {
+>>   "status": true,
+>>    "redis": true,
+>>    "socket": true,
+>>    "url": "vehicles",
+>>    "projectId": "618c51e8e0eb6615acbcfbf3",
+>>    "methods": [
+>>      "post",
+>>      "get",
+>>      "put",
+>>			"delete"
+>>    ],
+>>    "policy": {
+>>      "post": [
+>>        "manager"
+>>      ],
+>>      "get": [
+>>        "manager",
+>>        "superuser",
+>>        "user",
+>>        "client"
+>>      ],
+>>      "put": [
+>>        "manager",
+>>        "superuser"
+>>      ],
+>>      "delete": [
+>>        "manager"
+>>      ]
+>>    },
+>>    "preDatabase": {
+>>      "post": "async () => { }"
+>>    },
+>>   "params": {
+>>      "post": "celebrate({[Segments.BODY]:Joi.object().keys({  attributes: Joi.object(),  name: Joi.string(), content: Joi.Object(), })})",
+>>      "get": "celebrate({[Segments.QUERY]:Joi.object().keys({page:Joi.number(),skip:Joi.number(),createdAt:      Joi.object(),updatedAt:Joi.>>    object(),_id:Joi.string(), name: Joi.string(),  })})",
+>>      "put": "celebrate({[Segments.BODY]:Joi.object().keys({ _id:Joi.string().required(),    attributes: Joi.object(), name: Joi.string(), >> >>      content: Joi.object(),  }),})"
+>>    },
+>>    "modelDb": {
+>>      "attributes": "Object",
+>>      "name": 		 	"String",
+>>			"content": 		"Object"
+>>    },
+>>    "type": "route"
+>>  }
+>>
+>> RES 
+>>{
+>>  "status": true,
+>>  "redis": true,
+>>  "socket": true,
+>>  "_id": "618c5397e0eb6615acbcfbf4",
+>>  "url": "vehicles",
+>>  "projectId": "618c51e8e0eb6615acbcfbf3",
+>>  "methods": [
+>>    "post",
+>>    "get",
+>>    "put",
+>>    "delete"
+>>  ],
+>>  "policy": {
+>>    "post": [
+>>      "manager"
+>>    ],
+>>    "get": [
+>>      "manager",
+>>      "superuser",
+>>      "user",
+>>      "client"
+>>    ],
+>>    "put": [
+>>      "manager",
+>>      "superuser"
+>>    ],
+>>    "delete": [
+>>      "manager"
+>>    ]
+>>  },
+>>  "preDatabase": {
+>>    "post": "async () => { }"
+>>  },
+>>  "params": {
+>>    "post": "celebrate({[Segments.BODY]:Joi.object().keys({  attributes: Joi.object(),  name: Joi.string(), content: Joi.Object(), })})",
+>>    "get": "celebrate({[Segments.QUERY]:Joi.object().keys({page:Joi.number(),skip:Joi.number(),createdAt:      Joi.object(),updatedAt:Joi.object >>   (),_id:Joi.string(), name: Joi.string(),  })})",
+>>    "put": "celebrate({[Segments.BODY]:Joi.object().keys({ _id:Joi.string().required(),    attributes: Joi.object(), name: Joi.string(), >>content: Joi.object(),  }),})"
+>>  },
+>>  "modelDb": {
+>>    "attributes": "Object",
+>>    "name": "String",
+>>    "content": "Object"
+>>  },
+>>  "type": "route",
+>>  "supermanagerId": "5fbc7843d46b9f2e24f1bcc1",
+>>  "createdAt": "2021-11-10T23:19:51.862Z",
+>>  "updatedAt": "2021-11-10T23:19:51.862Z",
+>>  "__v": 0
+>> }
+
+# CRIANDO UM OBJETO NA ROTA CRIADA
+##
+>> 1. Faça login utilizando um usuário "manager"
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+
+# Project meugps
+# dev - supermanager
+>>	"email" : "nordesterastreamento+flows@gmail.com",
+>>	"password": "123456"
+# Criada route devices - "url": "devices"
+>>
+>> A rota devices é responsável por armazenar as informações dos veículos cadastrados e sua última posição no mapa
+>>
+>>  POST
+>>  GET
+>>  PUT
+>>  DELETE
+>>
+>> A rota devicesHistory é responsável por armazenar o histórico de localizações dos devices
+>>  POST
+>>  GET
+>>
+
+#  
+#

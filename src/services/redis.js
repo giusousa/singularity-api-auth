@@ -15,6 +15,16 @@ client.on("error", function (err) {
     console.log("Error "+ err);
 });
 
+client.on("ready", () => {
+    console.log('✅ 💃 Redis have ready!')
+})
+
+client.on("connect", () => {
+    console.log('✅ 💃 Connect redis success!')
+})
+
+
+
 /** getRedis
  * 
  * @param {String} key (_id do objeto/key no redis ) que se está querendo baixar

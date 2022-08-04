@@ -2,14 +2,12 @@ const authConfig = require('../config/auth.json')
 const jwt = require('jsonwebtoken');
 
 module.exports = (socket, next) => {
-
+  
     const { cookie } = socket.request.headers
     if(!cookie)
       return next(new Error('Header cookie auth required'));
 
     const [ authToken ] = cookie.split(' ').filter(string => string.includes('auth_token='))
-    
-    console.log(authToken)
     
     if (authToken) {
 
@@ -25,6 +23,7 @@ module.exports = (socket, next) => {
           
         if (decoded.level === 'admin' || decoded.level === 'supermanager')
           return next(new Error('Your level cannot use the socket - level:' + decoded.level ))
+
 
 
         socket.userData = {...decoded, userId: decoded.id, token };

@@ -1,4 +1,4 @@
-const app = require('./app')
+const app = require('./app');
 const gracefulShutdown = require('http-graceful-shutdown');
 
 /* Configuração protocolo http */
@@ -13,7 +13,8 @@ const port = process.env['PORT_' + process.env.NODE_ENV]
 server.listen(port);
 
 server.on("listening", () => {
-    console.log(`Server listening on port: ${port}`)
+    console.log(`✅ 💃 ${new Date().toString().replace(" (Coordinated Universal Time)", "")}`)
+    console.log(`✅ 💃 Server listening on port: ${port}!`)
 });
 
 // Handle SIGINT or SIGTERM and drain connections - 

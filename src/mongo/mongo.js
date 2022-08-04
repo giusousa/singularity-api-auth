@@ -17,7 +17,7 @@ mongoose.connect(process.env[DB], {
 });
 
 mongoose.connection.on('connected', () => {
-  console.log('Mongo has connected succesfully')
+  console.log('✅ 💃 Mongo has connected succesfully!')
 })
 mongoose.connection.on('reconnected', () => {
   console.log('Mongo has reconnected')
